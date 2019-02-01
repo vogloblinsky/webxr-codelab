@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "source": "1XecWUFh79CogHP2CcULLf0q3PRZnpigDtE09SnqNEO8",
+  "format": "html",
+  "prefix": "../../",
+  "mainga": "UA-49880327-14",
+  "updated": "2019-02-01T21:50:44Z",
+  "id": "ar-avec-webxr",
+  "duration": 50,
+  "title": "Développez une application de réalité augmentée 100% Web",
+  "author": "Vincent Ogloblinsky",
+  "summary": "Dans ce codelab, vous allez concevoir une application web utilisant les dernières API web permettant de réaliser une application de réalité augmentée..",
+  "theme": "web",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "Web"
+  ],
+  "tags": [
+    "web",
+    "webxr"
+  ],
+  "feedback": "https://github.com/vogloblinsky/webxr-codelab/issues",
+  "url": "ar-avec-webxr"
+}
