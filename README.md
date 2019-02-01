@@ -8,7 +8,7 @@ Ce codelab est une traduction et légère adaptation du codelab [ar-with-webxr](
 
 Ce dépôt contient la base de code pour le codelab [Développez une application de réalité augmentée 100% Web](https://vogloblinsky.github.io/webxr-codelab/).
 
-Ce codelab est en évolution permanente. Si vous trouvez un bogue ou vous avez une suggestion, veuillez s'il vous plais [soumettre un rapport de bogue](https://github.com/vogloblinsky/webxr-codelab/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Merci !
+Ce codelab est en évolution permanente. Si vous trouvez un bogue ou vous avez une suggestion, veuillez s'il vous plaît [soumettre un rapport de bogue](https://github.com/vogloblinsky/webxr-codelab/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Merci !
 
 Vous pouvez découvrir le [projet final ici](https://vogloblinsky.github.io/webxr-codelab/final).
 
