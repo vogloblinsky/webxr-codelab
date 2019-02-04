@@ -1,14 +1,14 @@
-
 <!doctype html>
 
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
   <title>Développez une application de réalité augmentée 100% Web</title>
-  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../elements/codelab.html">
+  <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="./elements/codelab.html">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <style is="custom-style">
     body {
@@ -16,190 +16,288 @@
       background: var(--google-codelab-background, #F8F9FA);
     }
   </style>
-  
+
 </head>
+
 <body unresolved class="fullbleed">
 
-  <google-codelab title="Développez une application de réalité augmentée 100% Web"
-                  environment="web"
-                  feedback-link="https://github.com/vogloblinsky/webxr-codelab/issues">
-    
-      <google-codelab-step label="Introduction" duration="5">
-        <p>Ce codelab est un exemple pas à pas de conception d&#39;une application web AR. Elle utilise JavaScript pour réaliser le rendu de modèles 3D qui apparaissent comme s&#39;ils existaient dans la réalité.</p>
-<p>Vous allez utilisez l&#39;API en cours de développement <a href="https://immersive-web.github.io/webxr/" target="_blank">WebXR</a>, (l&#39;API qui succède à l&#39;API <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVR_API" target="_blank">WebVR</a>), qui combine les fonctionnalitées de la réalité augmentée (AR) et la réalité virtuelle (VR). Nous allons nous focaliser sur les extensions expérimentales AR de l&#39;API WebXR Device qui sont en développement dans Chrome.</p>
-<p><img style="max-width: 624.00px" src="img/39e11a014e7dedce.png"></p>
-<h2><strong>Qu&#39;est-ce que la réalité augmentée?</strong></h2>
-<p>La réalitée augmentée (AR) est un terme généralement utilisé pour décrire le mélange de graphiques générés par ordinateur avec le monde réel, ce qui, dans le cas de la réalité augmentée avec un téléphone, veut dire placer de manière convaincante un graphique générée par ordinateur au-dessus du flux vidéo de l&#39;appareil photo. Pour que cet effet reste convaincant même quand le téléphone bouge, le téléphone doit connaître l&#39;environnement dans lequel il évolue, c&#39;est-à-dire détecter les surfaces et estimer l&#39;éclairage ambiant. En complément, le téléphone doit également déterminer sa &#34;position&#34; et son &#34;orientation&#34; dans ces environnement réel en 3 dimensions.</p>
-<p>L&#39;usage de la réalité augmentée est en constante augmentation, et avec un usage grandissant dans des applications populaires comme les filtres de &#34;selfies&#34; ou de jeux AR. Aujourd&#39;hui, le parc comprend des centaines de millions de téléphone compatibles avec la réalité augmentée, seulement un an après la sortie d&#39;<a href="https://developers.google.com/ar/discover/" target="_blank">ARCore</a>, la plateforme de réalité augmentée de Google, et <a href="https://developer.apple.com/arkit/" target="_blank">ARKit</a> d&#39;Apple. Avec cette technologie maintenant dans les mains de millions de personne, les propositions d&#39;extensions AR de l&#39;API WebXR peuvent être implémentées derrière des drapeaux dans les navigateurs.</p>
-<h2><strong>Ce que vous allez concevoir</strong></h2>
-<table>
-<tr><td colspan="1" rowspan="1"><p>Dans ce codelab, nous allons concevoir une application qui va vous permettre de prévisualiser des plats dans un restaurant, en plaçant au-dessus de votre assiette un modèle en utilisant la réalité augmentée. Votre application va :</p>
-<ol type="1" start="1">
-<li>Utiliser les capteurs de votre téléphone pour déterminer et suivre sa position et son orientation dans le monde réel.</li>
-<li>Faire le rendu du modèle 3D au-dessus du flux vidéo de votre appareil photo.</li>
-<li>Exécuter des tests de collision pour placer des objets au-dessus de surfaces découvertes dans le monde réel.</li>
-</ol>
-</td><td colspan="1" rowspan="1"><p><img style="max-width: 298.00px" src="img/4231321fd1370e.png"></p>
-</td></tr>
-</table>
-<h2><strong>Ce que vous allez apprendre</strong></h2>
-<ul>
-<li>Comment utiliser l&#39;API WebXR</li>
-<li>Comment trouver une surface en utilisant les tests de collisions de la réalité augmentée</li>
-<li>Comment charger et afficher un modèle 3D synchronisé avec le flux vidéo de l&#39;appareil photo</li>
-</ul>
-<p>Ce codelab est focalisé sur les APIs de réalité augmentée. Les concepts externes et non pertinents ne seront pas expliqués ici et fournis tel quel dans le dépôt de code.</p>
+  <google-codelab title="Développez une application de réalité augmentée 100% Web" environment="web" feedback-link="https://github.com/vogloblinsky/webxr-codelab/issues">
+
+    <google-codelab-step label="Introduction" duration="5">
+      <p>Ce codelab est un exemple pas à pas de conception d&#39;une application web AR. Elle utilise JavaScript pour
+        réaliser le rendu de modèles 3D qui apparaissent comme s&#39;ils existaient dans la réalité.</p>
+      <p>Vous allez utilisez l&#39;API en cours de développement <a href="https://immersive-web.github.io/webxr/"
+          target="_blank">WebXR</a>, (l&#39;API qui succède à l&#39;API <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVR_API"
+          target="_blank">WebVR</a>), qui combine les fonctionnalitées de la réalité augmentée (AR) et la réalité
+        virtuelle (VR). Nous allons nous focaliser sur les extensions expérimentales AR de l&#39;API WebXR Device qui
+        sont en développement dans Chrome.</p>
+      <p><img style="max-width: 624.00px" src="img/39e11a014e7dedce.png"></p>
+      <h2><strong>Qu&#39;est-ce que la réalité augmentée?</strong></h2>
+      <p>La réalitée augmentée (AR) est un terme généralement utilisé pour décrire le mélange de graphiques générés par
+        ordinateur avec le monde réel, ce qui, dans le cas de la réalité augmentée avec un téléphone, veut dire placer
+        de manière convaincante un graphique générée par ordinateur au-dessus du flux vidéo de l&#39;appareil photo.
+        Pour que cet effet reste convaincant même quand le téléphone bouge, le téléphone doit connaître
+        l&#39;environnement dans lequel il évolue, c&#39;est-à-dire détecter les surfaces et estimer l&#39;éclairage
+        ambiant. En complément, le téléphone doit également déterminer sa &#34;position&#34; et son
+        &#34;orientation&#34; dans ces environnement réel en 3 dimensions.</p>
+      <p>L&#39;usage de la réalité augmentée est en constante augmentation, et avec un usage grandissant dans des
+        applications populaires comme les filtres de &#34;selfies&#34; ou de jeux AR. Aujourd&#39;hui, le parc comprend
+        des centaines de millions de téléphone compatibles avec la réalité augmentée, seulement un an après la sortie
+        d&#39;<a href="https://developers.google.com/ar/discover/" target="_blank">ARCore</a>, la plateforme de réalité
+        augmentée de Google, et <a href="https://developer.apple.com/arkit/" target="_blank">ARKit</a> d&#39;Apple.
+        Avec cette technologie maintenant dans les mains de millions de personne, les propositions d&#39;extensions AR
+        de l&#39;API WebXR peuvent être implémentées derrière des drapeaux dans les navigateurs.</p>
+      <h2><strong>Ce que vous allez concevoir</strong></h2>
+      <table>
+        <tr>
+          <td colspan="1" rowspan="1">
+            <p>Dans ce codelab, nous allons concevoir une application qui va vous permettre de prévisualiser des plats
+              dans un restaurant, en plaçant au-dessus de votre assiette un modèle en utilisant la réalité augmentée.
+              Votre application va :</p>
+            <ol type="1" start="1">
+              <li>Utiliser les capteurs de votre téléphone pour déterminer et suivre sa position et son orientation
+                dans le monde réel.</li>
+              <li>Faire le rendu du modèle 3D au-dessus du flux vidéo de votre appareil photo.</li>
+              <li>Exécuter des tests de collision pour placer des objets au-dessus de surfaces découvertes dans le
+                monde réel.</li>
+            </ol>
+          </td>
+          <td colspan="1" rowspan="1">
+            <p><img style="max-width: 298.00px" src="img/4231321fd1370e.png"></p>
+          </td>
+        </tr>
+      </table>
+      <h2><strong>Ce que vous allez apprendre</strong></h2>
+      <ul>
+        <li>Comment utiliser l&#39;API WebXR</li>
+        <li>Comment trouver une surface en utilisant les tests de collisions de la réalité augmentée</li>
+        <li>Comment charger et afficher un modèle 3D synchronisé avec le flux vidéo de l&#39;appareil photo</li>
+      </ul>
+      <p>Ce codelab est focalisé sur les APIs de réalité augmentée. Les concepts externes et non pertinents ne seront
+        pas expliqués ici et fournis tel quel dans le dépôt de code.</p>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Mise en place" duration="15">
-        <h2>⚠ Ne fonctionne pas dans les dernières versions de Chrome Dev et Canary ⚠</h2>
-<p>L&#39;API WebXR est en cours de développement et soumise régulièrement à des changements. Ce codelab a été testé avec la version 70-72 de Chrome Dev.</p>
-<h2><strong>Ce dont vous avez besoin</strong></h2>
-<p>Ceci est un aperçu de tout ce dont vous avez besoin, et nous verrons tout ceci en détail après :</p>
-<ul>
-<li>un PC de développement et un serveur local d&#39;hébergement type Apache, nginx ou http-server (au travers de Node.js/npm)</li>
-<li>un <a href="https://developers.google.com/ar/discover/supported-devices" target="_blank">téléphone compatible ARCore</a> tournant sous <a href="https://www.android.com/versions/oreo-8-0/" target="_blank">Android 8.0 Oreo</a></li>
-<li><a href="https://play.google.com/store/apps/details?id=com.google.ar.core" target="_blank">ARcore</a> installé sur le téléphone (Chrome vous proposera de l&#39;installer)</li>
-<li>Chrome Dev. Utilisez une version entre 70-72, et utilisez la version &#34;<strong>Dev build</strong>&#34; (les branchements ARCore ne sont pas encore livrés sur les versions beta/prod)</li>
-<li><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb" target="_blank">Web Server pour Chrome</a>, ou votre propre serveur web</li>
-<li>un câble USB reliant votre téléphone à votre PC</li>
-<li>l&#39;<a href="https://github.com/vogloblinsky/webxr-codelab" target="_blank">exemple de code</a> du codelab</li>
-<li>un éditeur de code</li>
-<li>des connaissances en HTML, CSS, JavaScript et <a href="https://developer.chrome.com/devtools" target="_blank">Chrome Devtools</a></li>
-</ul>
-<h2><strong>Obtenez Chrome et ses fonctionnalités AR</strong></h2>
-<p>A l&#39;heure de l&#39;écriture de ce codelab, les fonctionnalités AR sont implémentées dans Chrome Dev à partir de la version 70.</p>
-<p>Vous pouvez y accéder dans <strong>Paramètres</strong> -&gt; <strong>A propos de Chrome</strong> et voir la version de Chrome que vous utilisez.</p>
-<p>La version actuelle (74) de ChromeDev étant trop récente, veuillez installer Chrome Dev avec le lien ci-dessous :</p>
-<ul>
-<li>Chrome Dev : <a href="https://www.apkmirror.com/apk/google-inc/chrome-dev/chrome-dev-72-0-3626-14-release/" target="_blank">Chrome Dev 72.0.3626.14</a></li>
-</ul>
-<p>L&#39;apk est généralement en architecture armeabi-v7a.</p>
-<h2><strong>S&#39;assurer que les fonctionnalités AR sont activées dans Chrome</strong></h2>
-<p>A l&#39;heure de l&#39;écriture de ce codelab, les fonctionnalités AR sont implémentées derrière les drapeaux webxr et webxr-hit-test. Pour activer le support de l&#39;API WebXR dans Chrome :</p>
-<ol type="1" start="1">
-<li>vérifiez que votre téléphone fonctionne bien sous <a href="https://www.android.com/versions/oreo-8-0/" target="_blank">Android 8.0 Oreo</a></li>
-<li>vérifiez que votre téléphone est bien compatible ARCore <a href="https://developers.google.com/ar/discover/supported-devices" target="_blank">ici</a></li>
-<li>vérifiez que votre version de Chrome est &gt;= 74</li>
-<li>tapez <code>chrome://flags</code> dans la barre d&#39;adresse</li>
-<li>tapez <code>webxr</code> dans le champ de recherche des drapeaux</li>
-<li>activez le drapeau WebXR Device API (<code>#webxr</code>)</li>
-</ol>
-<ul>
-<li>note : ignorez le drapeau WebVR (<code>#enable-webvr</code>)</li>
-</ul>
-<ol type="1" start="7">
-<li>activez le drapeau WebXR Hit Test (<code>#webxr-hit-test</code>)</li>
-<li>redémarrez Chrome pour vous assurez que les drapeaux sont actifs</li>
-</ol>
-<p><img style="max-width: 369.74px" src="img/59d4f183c4f0156.png"></p>
-<p>Visitez le lien ci-dessous sur votre téléphone pour essayer l&#39;étape 1 du codelab. Si vous obtenez une page avec un message &#34;Votre navigateur ne comporte pas les fonctionnalités AR&#34;, re-vérifiez la version de Chrome Canary et les drapeaux WebXR, qui requiert un redémarrage du navigateur.</p>
-<p><a href="https://vogloblinsky.github.io/webxr-codelab/work/" target="_blank"><paper-button class="colored" raised>Essayez</paper-button></a></p>
-<h2><strong>Téléchargez le code source du codelab</strong></h2>
-<p>Cliquez sur le lien ci-dessous pour téléchargez le code source du codelab sur votre PC :</p>
-<p><a href="https://github.com/vogloblinsky/webxr-codelab/archive/master.zip" target="_blank"><paper-button class="colored" raised>Téléchargez le code source</paper-button></a></p>
-<p>Dé-zippez ce fichier. Vous allez obtenir un dossier (<code>webxr-codelab</code>), qui contient dans des dossiers les différentes étapes du codelab, avec des ressources communes associées.</p>
-<p>Les dossiers <code>etape-NN</code> contiennent les sources pour les étapes correspondantes du codelab. Ils sont là pour référence.</p>
-<p>Nous allons démarrer le codelab avec le dossier <code>work</code>.</p>
-<h2><strong>Installez et vérifiez votre serveur web</strong></h2>
-<p>Vous êtes libre d&#39;utiliser votre propre serveur web, mais nous allons voir ici comment utiliser Chrome Web Server si vous n&#39;en avez pas un. Si vous n&#39;avez pas cette application installée sur votre ordinateur, vous pouvez l&#39;installer depuis le Chrome Web Store.</p>
-<p><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en" target="_blank"><paper-button class="colored" raised>Installez Web Server for Chrome</paper-button></a></p>
-<p>Après l&#39;installation, cliquez sur le raccourci &#34;Applications&#34; dans un nouvel onglet Chrome.</p>
-<p><img style="max-width: 114.00px" src="img/dcd4593b8fc0aedf.png"></p>
-<p>Vous devriez voir apparaître cette fenêtre qui va vous permettre de configurer votre serveur local.</p>
-<p><img alt="Screen Shot 2016-02-18 at 11.48.14 AM.png" style="max-width: 513.64px" src="img/433870360ad308d4.png"></p>
-<ol type="1" start="1">
-<li>cliquez sur le bouton <strong>choose folder</strong>, et sélectionnez le dossier <code>webxr-codelab</code>. Cela va vous permettre d&#39;héberger votre travail en cours de développement via une addresse mise en avant dans la fenêtre (dans la section <strong>Web Server URL(s)</strong>).</li>
-<li>dans les options, vérifiez que <strong>Automatically show index.html</strong> est bien activée</li>
-<li><strong>ARRÊTEZ</strong> et <strong>REDÉMARREZ</strong> le serveur en activant le bouton glissant</li>
-</ol>
-<p><img alt="Screen Shot 2016-02-18 at 12.22.18 PM.png" style="max-width: 194.50px" src="img/daefd30e8a290df5.png"></p>
-<ol type="1" start="4">
-<li>Vérifiez qu&#39;au moins une adresse apparaît : </li>
-</ol>
-<ul>
-<li>http://127.0.0.1:8887 — l&#39;adresse par défaut localhost</li>
-</ul>
-<p>Maintenant nous allons configurer votre téléphone afin qu&#39;en visitant <code>localhost:8887</code> vous ayez accès au même port sur votre PC.</p>
-<ol type="1" start="1">
-<li>sur votre PC, dans Chrome, saisissez dans votre barre d&#39;adresse <code>chrome://inspect</code> et cliquez sur le bouton <strong>Port forwarding...</strong></li>
-</ol>
-<p><img style="max-width: 462.00px" src="img/edbc1c8e20fe77a1.png"></p>
-<p>Utilisez le paramètre <strong>Port forwarding settings</strong> pour transmettre le port <code>8887</code> vers <code>localhost:8887</code>. Vérifiez ensuite que l&#39;option <strong>Enable port forwarding</strong> est active.</p>
-<p><img style="max-width: 228.24px" src="img/8ceaaff488b3161.png"></p>
-<p>Activez le mode développeur sous Android :</p>
-<ol type="1" start="1">
-<li>rendez-vous dans les paramètres</li>
-<li>cliquez sur &#34;<strong>A propos du téléphone</strong>&#34;</li>
-<li>cliquez sur &#34;<strong>Informations sur le logiciel</strong>&#34;</li>
-<li>cliquez plusieurs fois sur le &#34;<strong>Numéro de build</strong>&#34; afin d&#39;activer le mode développeur</li>
-</ol>
-<p>Activez le débogage USB :</p>
-<ol type="1" start="1">
-<li>rendez-vous dans les paramètres</li>
-<li>cliquez sur &#34;<strong>Options de développement</strong>&#34;</li>
-<li>activez l&#39;option &#34;<strong>Débogage USB</strong>&#34;</li>
-</ol>
-<p>Testez votre connection :</p>
-<ol type="1" start="1">
-<li>connectez votre téléphone à votre PC avec votre câble USB</li>
-<li>sur votre téléphone, saisissez <code>http://localhost:8887</code> dans la barre d&#39;adresse.</li>
-<li>sur votre téléphone, cliquez sur le dossier <code>work</code> pour chargez la page <code>work/index.html</code></li>
-</ol>
-<table>
-<tr><td colspan="1" rowspan="1"><p>Vous devez normalement voir cette page...</p>
-</td><td colspan="1" rowspan="1"><p>...sinon, vérifiez la version de Chrome Canary, les drapeaux dans <code>chrome://flags</code> et redémarrez Chrome</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p><img style="max-width: 298.00px" src="img/d1ae982c33aa9663.png"></p>
-</td><td colspan="1" rowspan="1"><p><img style="max-width: 298.00px" src="img/5636cebcb56c699.png"></p>
-</td></tr>
-</table>
-<p>Une fois la connecton opérationnelle, cliquez sur le bouton &#34;Entrez dans l&#39;expérience de réalité augmentée&#34;. Il vous sera proposé d&#39;installer ARCore.</p>
-<p><img style="max-width: 233.50px" src="img/d9fa833e7c75fbf8.png"></p>
-<p>La première fois que vous lancez une application web AR, une boît de dialogue concernant les autorisations d&#39;accès à votre appareil photo apparaîtra.</p>
-<table>
-<tr><td colspan="1" rowspan="1"><p><img style="max-width: 298.00px" src="img/32d7ef08a7216eb8.png"></p>
-</td><td colspan="1" rowspan="1"><p><img style="max-width: 137.50px" src="img/92b0afd1dc7915e.png"></p>
-</td></tr>
-</table>
-<p>Une fois que tout fonctionne bien, vous devriez voir une scène avec des cubes surplombant le flux vidéo de votre appareil photo. La compréhension de l‘environnement s&#39;améliore à mesure que vous vous déplacez et bougez votre téléphone, cela aide à stabiliser les choses.</p>
-<p><img style="max-width: 624.00px" src="img/ad7b449dfa736f.png"></p>
-<aside class="warning"><p><strong>Important</strong> : Pour des raisons de sécurités, l&#39;API WebXR n&#39;est utilisable que sur un domaine en HTTPS, avec une exception pour localhost. Si vous avez des difficultées à activer WebXR, vérifiez que vous êtes bien en HTTPS ou sur une adresse en localhost .</p>
-</aside>
-<aside class="special"><p>A partir de ce point, tous les tests-vérifications requièrent de visiter le lien sur votre téléphone.</p>
-</aside>
+    </google-codelab-step>
+
+    <google-codelab-step label="Mise en place" duration="15">
+      <h2>⚠ Ne fonctionne pas dans les dernières versions de Chrome Dev et Canary ⚠</h2>
+      <p>L&#39;API WebXR est en cours de développement et soumise régulièrement à des changements. Ce codelab a été
+        testé avec la version 70-72 de Chrome Dev.</p>
+      <h2><strong>Ce dont vous avez besoin</strong></h2>
+      <p>Ceci est un aperçu de tout ce dont vous avez besoin, et nous verrons tout ceci en détail après :</p>
+      <ul>
+        <li>un PC de développement et un serveur local d&#39;hébergement type Apache, nginx ou http-server (au travers
+          de Node.js/npm)</li>
+        <li>un <a href="https://developers.google.com/ar/discover/supported-devices" target="_blank">téléphone
+            compatible ARCore</a> tournant sous <a href="https://www.android.com/versions/oreo-8-0/" target="_blank">Android
+            8.0 Oreo</a></li>
+        <li><a href="https://play.google.com/store/apps/details?id=com.google.ar.core" target="_blank">ARcore</a>
+          installé sur le téléphone (Chrome vous proposera de l&#39;installer)</li>
+        <li>Chrome Dev. Utilisez une version entre 70-72, et utilisez la version &#34;<strong>Dev build</strong>&#34;
+          (les branchements ARCore ne sont pas encore livrés sur les versions beta/prod)</li>
+        <li><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb"
+            target="_blank">Web Server pour Chrome</a>, ou votre propre serveur web</li>
+        <li>un câble USB reliant votre téléphone à votre PC</li>
+        <li>l&#39;<a href="https://github.com/vogloblinsky/webxr-codelab" target="_blank">exemple de code</a> du
+          codelab</li>
+        <li>un éditeur de code</li>
+        <li>des connaissances en HTML, CSS, JavaScript et <a href="https://developer.chrome.com/devtools" target="_blank">Chrome
+            Devtools</a></li>
+      </ul>
+      <h2><strong>Obtenez Chrome et ses fonctionnalités AR</strong></h2>
+      <p>A l&#39;heure de l&#39;écriture de ce codelab, les fonctionnalités AR sont implémentées dans Chrome Dev à
+        partir de la version 70.</p>
+      <p>Vous pouvez y accéder dans <strong>Paramètres</strong> -&gt; <strong>A propos de Chrome</strong> et voir la
+        version de Chrome que vous utilisez.</p>
+      <p>La version actuelle (74) de ChromeDev étant trop récente, veuillez installer Chrome Dev avec le lien
+        ci-dessous :</p>
+      <ul>
+        <li>Chrome Dev : <a href="https://www.apkmirror.com/apk/google-inc/chrome-dev/chrome-dev-72-0-3626-14-release/"
+            target="_blank">Chrome Dev 72.0.3626.14</a></li>
+      </ul>
+      <p>L&#39;apk est généralement en architecture armeabi-v7a.</p>
+      <h2><strong>S&#39;assurer que les fonctionnalités AR sont activées dans Chrome</strong></h2>
+      <p>A l&#39;heure de l&#39;écriture de ce codelab, les fonctionnalités AR sont implémentées derrière les drapeaux
+        webxr et webxr-hit-test. Pour activer le support de l&#39;API WebXR dans Chrome :</p>
+      <ol type="1" start="1">
+        <li>vérifiez que votre téléphone fonctionne bien sous <a href="https://www.android.com/versions/oreo-8-0/"
+            target="_blank">Android 8.0 Oreo</a></li>
+        <li>vérifiez que votre téléphone est bien compatible ARCore <a href="https://developers.google.com/ar/discover/supported-devices"
+            target="_blank">ici</a></li>
+        <li>vérifiez que votre version de Chrome est &gt;= 74</li>
+        <li>tapez <code>chrome://flags</code> dans la barre d&#39;adresse</li>
+        <li>tapez <code>webxr</code> dans le champ de recherche des drapeaux</li>
+        <li>activez le drapeau WebXR Device API (<code>#webxr</code>)</li>
+      </ol>
+      <ul>
+        <li>note : ignorez le drapeau WebVR (<code>#enable-webvr</code>)</li>
+      </ul>
+      <ol type="1" start="7">
+        <li>activez le drapeau WebXR Hit Test (<code>#webxr-hit-test</code>)</li>
+        <li>redémarrez Chrome pour vous assurez que les drapeaux sont actifs</li>
+      </ol>
+      <p><img style="max-width: 369.74px" src="img/59d4f183c4f0156.png"></p>
+      <p>Visitez le lien ci-dessous sur votre téléphone pour essayer l&#39;étape 1 du codelab. Si vous obtenez une page
+        avec un message &#34;Votre navigateur ne comporte pas les fonctionnalités AR&#34;, re-vérifiez la version de
+        Chrome Canary et les drapeaux WebXR, qui requiert un redémarrage du navigateur.</p>
+      <p><a href="https://vogloblinsky.github.io/webxr-codelab/work/" target="_blank">
+          <paper-button class="colored" raised>Essayez</paper-button>
+        </a></p>
+      <h2><strong>Téléchargez le code source du codelab</strong></h2>
+      <p>Cliquez sur le lien ci-dessous pour téléchargez le code source du codelab sur votre PC :</p>
+      <p><a href="https://github.com/vogloblinsky/webxr-codelab/archive/master.zip" target="_blank">
+          <paper-button class="colored" raised>Téléchargez le code source</paper-button>
+        </a></p>
+      <p>Dé-zippez ce fichier. Vous allez obtenir un dossier (<code>webxr-codelab</code>), qui contient dans des
+        dossiers les différentes étapes du codelab, avec des ressources communes associées.</p>
+      <p>Les dossiers <code>etape-NN</code> contiennent les sources pour les étapes correspondantes du codelab. Ils
+        sont là pour référence.</p>
+      <p>Nous allons démarrer le codelab avec le dossier <code>work</code>.</p>
+      <h2><strong>Installez et vérifiez votre serveur web</strong></h2>
+      <p>Vous êtes libre d&#39;utiliser votre propre serveur web, mais nous allons voir ici comment utiliser Chrome Web
+        Server si vous n&#39;en avez pas un. Si vous n&#39;avez pas cette application installée sur votre ordinateur,
+        vous pouvez l&#39;installer depuis le Chrome Web Store.</p>
+      <p><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en"
+          target="_blank">
+          <paper-button class="colored" raised>Installez Web Server for Chrome</paper-button>
+        </a></p>
+      <p>Après l&#39;installation, cliquez sur le raccourci &#34;Applications&#34; dans un nouvel onglet Chrome.</p>
+      <p><img style="max-width: 114.00px" src="img/dcd4593b8fc0aedf.png"></p>
+      <p>Vous devriez voir apparaître cette fenêtre qui va vous permettre de configurer votre serveur local.</p>
+      <p><img alt="Screen Shot 2016-02-18 at 11.48.14 AM.png" style="max-width: 513.64px" src="img/433870360ad308d4.png"></p>
+      <ol type="1" start="1">
+        <li>cliquez sur le bouton <strong>choose folder</strong>, et sélectionnez le dossier <code>webxr-codelab</code>.
+          Cela va vous permettre d&#39;héberger votre travail en cours de développement via une addresse mise en avant
+          dans la fenêtre (dans la section <strong>Web Server URL(s)</strong>).</li>
+        <li>dans les options, vérifiez que <strong>Automatically show index.html</strong> est bien activée</li>
+        <li><strong>ARRÊTEZ</strong> et <strong>REDÉMARREZ</strong> le serveur en activant le bouton glissant</li>
+      </ol>
+      <p><img alt="Screen Shot 2016-02-18 at 12.22.18 PM.png" style="max-width: 194.50px" src="img/daefd30e8a290df5.png"></p>
+      <ol type="1" start="4">
+        <li>Vérifiez qu&#39;au moins une adresse apparaît : </li>
+      </ol>
+      <ul>
+        <li>http://127.0.0.1:8887 — l&#39;adresse par défaut localhost</li>
+      </ul>
+      <p>Maintenant nous allons configurer votre téléphone afin qu&#39;en visitant <code>localhost:8887</code> vous
+        ayez accès au même port sur votre PC.</p>
+      <ol type="1" start="1">
+        <li>sur votre PC, dans Chrome, saisissez dans votre barre d&#39;adresse <code>chrome://inspect</code> et
+          cliquez sur le bouton <strong>Port forwarding...</strong></li>
+      </ol>
+      <p><img style="max-width: 462.00px" src="img/edbc1c8e20fe77a1.png"></p>
+      <p>Utilisez le paramètre <strong>Port forwarding settings</strong> pour transmettre le port <code>8887</code>
+        vers <code>localhost:8887</code>. Vérifiez ensuite que l&#39;option <strong>Enable port forwarding</strong> est
+        active.</p>
+      <p><img style="max-width: 228.24px" src="img/8ceaaff488b3161.png"></p>
+      <p>Activez le mode développeur sous Android :</p>
+      <ol type="1" start="1">
+        <li>rendez-vous dans les paramètres</li>
+        <li>cliquez sur &#34;<strong>A propos du téléphone</strong>&#34;</li>
+        <li>cliquez sur &#34;<strong>Informations sur le logiciel</strong>&#34;</li>
+        <li>cliquez plusieurs fois sur le &#34;<strong>Numéro de build</strong>&#34; afin d&#39;activer le mode
+          développeur</li>
+      </ol>
+      <p>Activez le débogage USB :</p>
+      <ol type="1" start="1">
+        <li>rendez-vous dans les paramètres</li>
+        <li>cliquez sur &#34;<strong>Options de développement</strong>&#34;</li>
+        <li>activez l&#39;option &#34;<strong>Débogage USB</strong>&#34;</li>
+      </ol>
+      <p>Testez votre connection :</p>
+      <ol type="1" start="1">
+        <li>connectez votre téléphone à votre PC avec votre câble USB</li>
+        <li>sur votre téléphone, saisissez <code>http://localhost:8887</code> dans la barre d&#39;adresse.</li>
+        <li>sur votre téléphone, cliquez sur le dossier <code>work</code> pour chargez la page <code>work/index.html</code></li>
+      </ol>
+      <table>
+        <tr>
+          <td colspan="1" rowspan="1">
+            <p>Vous devez normalement voir cette page...</p>
+          </td>
+          <td colspan="1" rowspan="1">
+            <p>...sinon, vérifiez la version de Chrome Canary, les drapeaux dans <code>chrome://flags</code> et
+              redémarrez Chrome</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1" rowspan="1">
+            <p><img style="max-width: 298.00px" src="img/d1ae982c33aa9663.png"></p>
+          </td>
+          <td colspan="1" rowspan="1">
+            <p><img style="max-width: 298.00px" src="img/5636cebcb56c699.png"></p>
+          </td>
+        </tr>
+      </table>
+      <p>Une fois la connecton opérationnelle, cliquez sur le bouton &#34;Entrez dans l&#39;expérience de réalité
+        augmentée&#34;. Il vous sera proposé d&#39;installer ARCore.</p>
+      <p><img style="max-width: 233.50px" src="img/d9fa833e7c75fbf8.png"></p>
+      <p>La première fois que vous lancez une application web AR, une boît de dialogue concernant les autorisations
+        d&#39;accès à votre appareil photo apparaîtra.</p>
+      <table>
+        <tr>
+          <td colspan="1" rowspan="1">
+            <p><img style="max-width: 298.00px" src="img/32d7ef08a7216eb8.png"></p>
+          </td>
+          <td colspan="1" rowspan="1">
+            <p><img style="max-width: 137.50px" src="img/92b0afd1dc7915e.png"></p>
+          </td>
+        </tr>
+      </table>
+      <p>Une fois que tout fonctionne bien, vous devriez voir une scène avec des cubes surplombant le flux vidéo de
+        votre appareil photo. La compréhension de l‘environnement s&#39;améliore à mesure que vous vous déplacez et
+        bougez votre téléphone, cela aide à stabiliser les choses.</p>
+      <p><img style="max-width: 624.00px" src="img/ad7b449dfa736f.png"></p>
+      <aside class="warning">
+        <p><strong>Important</strong> : Pour des raisons de sécurités, l&#39;API WebXR n&#39;est utilisable que sur un
+          domaine en HTTPS, avec une exception pour localhost. Si vous avez des difficultées à activer WebXR, vérifiez
+          que vous êtes bien en HTTPS ou sur une adresse en localhost .</p>
+      </aside>
+      <aside class="special">
+        <p>A partir de ce point, tous les tests-vérifications requièrent de visiter le lien sur votre téléphone.</p>
+      </aside>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Statut de la réalité augmentée dans le web" duration="5">
-        <h2><strong>Histoire</strong></h2>
-<p>The app&#39;s shell is the minimal HTML, CSS, and JavaScript that is required to power the user interface of a progressive web app and is one of the components that ensures reliably good performance. Its first load should be extremely quick and immediately cached. &#34;Cached&#34; means that the shell files are loaded once over the network and then saved to the local device. Every subsequent time that the user opens the app, the shell files are loaded from the local device&#39;s cache, which results in blazing-fast startup times. </p>
-<p>App shell architecture separates the core application infrastructure and UI from the data. All of the UI and infrastructure is cached locally using a <a href="https://developers.google.com/web/fundamentals/getting-started/primers/service-workers" target="_blank">service worker</a> so that on subsequent loads, the Progressive Web App only needs to retrieve the necessary data, instead of having to load everything.</p>
-<h2><strong>Implémentation</strong></h2>
-<p>Using the app shell architecture allows you to focus on speed, giving your Progressive Web App similar properties to native apps: instant loading and regular updates, all without the need of an app store.</p>
-<h2><strong>Le futur</strong></h2>
-<p>TODO</p>
+    </google-codelab-step>
+
+    <google-codelab-step label="Statut de la réalité augmentée dans le web" duration="5">
+      <h2><strong>Histoire</strong></h2>
+      <p>The app&#39;s shell is the minimal HTML, CSS, and JavaScript that is required to power the user interface of a
+        progressive web app and is one of the components that ensures reliably good performance. Its first load should
+        be extremely quick and immediately cached. &#34;Cached&#34; means that the shell files are loaded once over the
+        network and then saved to the local device. Every subsequent time that the user opens the app, the shell files
+        are loaded from the local device&#39;s cache, which results in blazing-fast startup times. </p>
+      <p>App shell architecture separates the core application infrastructure and UI from the data. All of the UI and
+        infrastructure is cached locally using a <a href="https://developers.google.com/web/fundamentals/getting-started/primers/service-workers"
+          target="_blank">service worker</a> so that on subsequent loads, the Progressive Web App only needs to
+        retrieve the necessary data, instead of having to load everything.</p>
+      <h2><strong>Implémentation</strong></h2>
+      <p>Using the app shell architecture allows you to focus on speed, giving your Progressive Web App similar
+        properties to native apps: instant loading and regular updates, all without the need of an app store.</p>
+      <h2><strong>Le futur</strong></h2>
+      <p>TODO</p>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Structure d&#39;une application AR" duration="15">
-        <p>There are multiple ways to get started with any project, in this case, to keep our project as simple as possible and concentrate on Progressive Web Apps, we&#39;ve provided you with all of the resources you&#39;ll need.</p>
-<h2><strong>Create the HTML for the App Shell</strong></h2>
-<p>Now we&#39;ll add the core components we discussed in <a href="https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp#architect_your_app_shell" target="_blank">Architect the App Shell</a>.</p>
-<p>Remember, the key components will consist of:</p>
-<ul>
-<li>Header with a title, and add/refresh buttons</li>
-<li>Container for forecast cards</li>
-<li>A forecast card template</li>
-<li>A dialog for adding new cities</li>
-<li>A loading indicator</li>
-</ul>
-<p>The <code>index.html</code> file that is already in your <code>work</code> directory should look something like this (this is a subset of the actual contents, don&#39;t copy this code into your file):</p>
-<pre><code>&lt;!DOCTYPE html&gt;
+    </google-codelab-step>
+
+    <google-codelab-step label="Structure d&#39;une application AR" duration="15">
+      <p>There are multiple ways to get started with any project, in this case, to keep our project as simple as
+        possible and concentrate on Progressive Web Apps, we&#39;ve provided you with all of the resources you&#39;ll
+        need.</p>
+      <h2><strong>Create the HTML for the App Shell</strong></h2>
+      <p>Now we&#39;ll add the core components we discussed in <a href="https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp#architect_your_app_shell"
+          target="_blank">Architect the App Shell</a>.</p>
+      <p>Remember, the key components will consist of:</p>
+      <ul>
+        <li>Header with a title, and add/refresh buttons</li>
+        <li>Container for forecast cards</li>
+        <li>A forecast card template</li>
+        <li>A dialog for adding new cities</li>
+        <li>A loading indicator</li>
+      </ul>
+      <p>The <code>index.html</code> file that is already in your <code>work</code> directory should look something
+        like this (this is a subset of the actual contents, don&#39;t copy this code into your file):</p>
+      <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
   &lt;meta charset=&#34;utf-8&#34;&gt;
@@ -234,104 +332,182 @@
   &lt;!-- Insert link to app.js here --&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-<p>Notice the loader is visible by default. This ensures that the user sees the loader immediately as the page loads, giving them a clear indication that the content is loading.</p>
-<p>To save time, we&#39;ve also already created the stylesheet for you to use.</p>
-<aside class="special"><p>We&#39;ve given you the markup and styles to save you some time and make sure you&#39;re starting on a solid foundation. In the next section, you&#39;ll have an opportunity to write your own code.</p>
-</aside>
-<h2><strong>Check out the key JavaScript app code</strong></h2>
-<p>Now that we have most of the UI ready, it&#39;s time to start hooking up the code to make everything work. Like the rest of the app shell, be conscious about what code is necessary as part of the key experience and what can be loaded later.</p>
-<p>Your work directory also already includes the app code (<code>scripts/app.js</code>), in it you&#39;ll find:</p>
-<ul>
-<li>An <code>app</code> object that contains some of the key information necessary for the app.</li>
-<li>The event listeners for all of the buttons in the header (<code>add/refresh</code>) and in the add city dialog (<code>add/cancel</code>).</li>
-<li>A method to add or update forecast cards (<code>app.updateForecastCard</code>).</li>
-<li>A method to get the latest weather forecast data from the Firebase Public Weather API (<code>app.getForecast</code>).</li>
-<li>A method to iterate the current cards and call <code>app.getForecast</code> to get the latest forecast data (<code>app.updateForecasts</code>).</li>
-<li>Some fake data (<code>initialWeatherForecast</code>) you can use to quickly test how things render.</li>
-</ul>
-<h2><strong>Test it out</strong></h2>
-<p>Now that you&#39;ve got the core HTML, styles and JavaScript, it&#39;s time to test the app.</p>
-<p>To see how the fake weather data is rendered, uncomment the following line at the bottom of your <code>index.html</code> file:</p>
-<pre>&lt;!--&lt;script src=&#34;scripts/app.js&#34; async&gt;&lt;/script&gt;--&gt;</pre>
-<p>Next, uncomment the following line at the bottom of your <code>app.js</code> file:</p>
-<pre>// app.updateForecastCard(initialWeatherForecast);</pre>
-<p>Reload your app. The result should be a nicely formatted (though fake, as you can tell by the date) forecast card with the spinner disabled, like this:</p>
-<p><img style="max-width: 243.85px" src="img/166c3b4982e4a0ad.png"></p>
-<p><a href="https://weather-pwa-sample.firebaseapp.com/step-04/" target="_blank"><paper-button class="colored" raised>TRY IT</paper-button></a></p>
-<p>Once you&#39;ve tried it and verified it works as expected, you can remove the call to  <code>app.updateForecastCard</code> with the fake data again. We only needed it to ensure that everything worked as expected.</p>
+      <p>Notice the loader is visible by default. This ensures that the user sees the loader immediately as the page
+        loads, giving them a clear indication that the content is loading.</p>
+      <p>To save time, we&#39;ve also already created the stylesheet for you to use.</p>
+      <aside class="special">
+        <p>We&#39;ve given you the markup and styles to save you some time and make sure you&#39;re starting on a solid
+          foundation. In the next section, you&#39;ll have an opportunity to write your own code.</p>
+      </aside>
+      <h2><strong>Check out the key JavaScript app code</strong></h2>
+      <p>Now that we have most of the UI ready, it&#39;s time to start hooking up the code to make everything work.
+        Like the rest of the app shell, be conscious about what code is necessary as part of the key experience and
+        what can be loaded later.</p>
+      <p>Your work directory also already includes the app code (<code>scripts/app.js</code>), in it you&#39;ll find:</p>
+      <ul>
+        <li>An <code>app</code> object that contains some of the key information necessary for the app.</li>
+        <li>The event listeners for all of the buttons in the header (<code>add/refresh</code>) and in the add city
+          dialog (<code>add/cancel</code>).</li>
+        <li>A method to add or update forecast cards (<code>app.updateForecastCard</code>).</li>
+        <li>A method to get the latest weather forecast data from the Firebase Public Weather API (<code>app.getForecast</code>).</li>
+        <li>A method to iterate the current cards and call <code>app.getForecast</code> to get the latest forecast data
+          (<code>app.updateForecasts</code>).</li>
+        <li>Some fake data (<code>initialWeatherForecast</code>) you can use to quickly test how things render.</li>
+      </ul>
+      <h2><strong>Test it out</strong></h2>
+      <p>Now that you&#39;ve got the core HTML, styles and JavaScript, it&#39;s time to test the app.</p>
+      <p>To see how the fake weather data is rendered, uncomment the following line at the bottom of your <code>index.html</code>
+        file:</p>
+      <pre>&lt;!--&lt;script src=&#34;scripts/app.js&#34; async&gt;&lt;/script&gt;--&gt;</pre>
+      <p>Next, uncomment the following line at the bottom of your <code>app.js</code> file:</p>
+      <pre>// app.updateForecastCard(initialWeatherForecast);</pre>
+      <p>Reload your app. The result should be a nicely formatted (though fake, as you can tell by the date) forecast
+        card with the spinner disabled, like this:</p>
+      <p><img style="max-width: 243.85px" src="img/166c3b4982e4a0ad.png"></p>
+      <p><a href="https://weather-pwa-sample.firebaseapp.com/step-04/" target="_blank">
+          <paper-button class="colored" raised>TRY IT</paper-button>
+        </a></p>
+      <p>Once you&#39;ve tried it and verified it works as expected, you can remove the call to <code>app.updateForecastCard</code>
+        with the fake data again. We only needed it to ensure that everything worked as expected.</p>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Ajouter un cube sur une surface" duration="20">
-        <p>Progressive Web Apps should start fast and be usable immediately. In its current state, our Weather App starts quickly, but it&#39;s not useable. There&#39;s no data. We could make an AJAX request to get that data, but that results in an extra request and makes the initial load longer. Instead, provide real data in the first load.</p>
-<h2><strong>Inject the weather forecast data</strong></h2>
-<p>For this code lab, we&#39;ll simulate the server injecting the weather forecast directly into the JavaScript, but in a production app, the latest weather forecast data would be injected by the server based on the IP address geo-location of the user.</p>
-<p>The code already contains the data that we&#39;re going to inject. It&#39;s the <code>initialWeatherForecast</code> that we used in the previous step.</p>
-<h2><strong>Differentiating the first run</strong></h2>
-<p>But, how do we know when to display this information, which may not be relevant on future loads when the weather app is pulled from the cache? When the user loads the app on subsequent visits, they may have changed cities, so we need to load the information for those cities, not necessarily the first city they ever looked up.</p>
-<p>User preferences, like the list of cities a user has subscribed to, should be stored locally using IndexedDB or another fast storage mechanism. To simplify this code lab as much as possible, we&#39;ve used <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank"><code>localStorage</code></a>, which is not ideal for production apps because it is a blocking, synchronous storage mechanism that is potentially very slow on some devices.</p>
-<aside class="special"><p><strong>Extra Credit</strong>: Replace <code>localStorage</code> implementation with <a href="https://www.npmjs.com/package/idb" target="_blank">idb</a>, check out <a href="https://github.com/localForage/localForage" target="_blank">localForage</a> as a simple wrapper to idb.</p>
-</aside>
-<p>First, let&#39;s add the code required to save user preferences. Find the following TODO comment in your code.</p>
-<pre><code>  // TODO add saveSelectedCities function here</code></pre>
-<p>And add the following code below the comment.</p>
-<pre><code>  // Save list of cities to localStorage.
+    </google-codelab-step>
+
+    <google-codelab-step label="Ajouter un cube sur une surface" duration="20">
+      <p>Progressive Web Apps should start fast and be usable immediately. In its current state, our Weather App starts
+        quickly, but it&#39;s not useable. There&#39;s no data. We could make an AJAX request to get that data, but
+        that results in an extra request and makes the initial load longer. Instead, provide real data in the first
+        load.</p>
+      <h2><strong>Inject the weather forecast data</strong></h2>
+      <p>For this code lab, we&#39;ll simulate the server injecting the weather forecast directly into the JavaScript,
+        but in a production app, the latest weather forecast data would be injected by the server based on the IP
+        address geo-location of the user.</p>
+      <p>The code already contains the data that we&#39;re going to inject. It&#39;s the <code>initialWeatherForecast</code>
+        that we used in the previous step.</p>
+      <h2><strong>Differentiating the first run</strong></h2>
+      <p>But, how do we know when to display this information, which may not be relevant on future loads when the
+        weather app is pulled from the cache? When the user loads the app on subsequent visits, they may have changed
+        cities, so we need to load the information for those cities, not necessarily the first city they ever looked
+        up.</p>
+      <p>User preferences, like the list of cities a user has subscribed to, should be stored locally using IndexedDB
+        or another fast storage mechanism. To simplify this code lab as much as possible, we&#39;ve used <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+          target="_blank"><code>localStorage</code></a>, which is not ideal for production apps because it is a
+        blocking, synchronous storage mechanism that is potentially very slow on some devices.</p>
+      <aside class="special">
+        <p><strong>Extra Credit</strong>: Replace <code>localStorage</code> implementation with <a href="https://www.npmjs.com/package/idb"
+            target="_blank">idb</a>, check out <a href="https://github.com/localForage/localForage" target="_blank">localForage</a>
+          as a simple wrapper to idb.</p>
+      </aside>
+      <p>First, let&#39;s add the code required to save user preferences. Find the following TODO comment in your code.</p>
+      <pre><code>  // TODO add saveSelectedCities function here</code></pre>
+      <p>And add the following code below the comment.</p>
+      <pre><code>  // Save list of cities to localStorage.
   &lt;HIGHLIGHT&gt;app.saveSelectedCities = function() {&lt;/HIGHLIGHT&gt;
     var selectedCities = JSON.stringify(app.selectedCities);
     localStorage.selectedCities = selectedCities;
   };</code></pre>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Utiliser un modèle 3D" duration="20">
-        <p>Progressive Web Apps have to be fast, and installable, which means that they work online, offline, and on intermittent, slow connections. To achieve this, we need to cache our app shell using service worker, so that it&#39;s always available quickly and reliably.</p>
-<p>If you&#39;re unfamiliar with service workers, you can get a basic understanding by reading <a href="https://developers.google.com/web/fundamentals/primers/service-worker/" target="_blank">Introduction To Service Workers</a> about what they can do, how their lifecycle works and more. Once you&#39;ve completed this code lab, be sure to check out the <a href="http://goo.gl/jhXCBy" target="_blank">Debugging Service Workers code lab</a> for a more indepth look at how to work with service workers.</p>
-<p>The next step is to modify the app and service worker logic to be able to cache weather data, and return the most recent data from the cache when the app is offline.</p>
-<p><strong>Tip:</strong> To start fresh and clear all saved data (<code>localStorage</code>, <code>indexedDB</code> data, cached files) and remove any service workers, use the Clear storage pane in the Application tab.</p>
-<p><a href="https://weather-pwa-sample.firebaseapp.com/step-06/" target="_blank"><paper-button class="colored" raised>TRY IT</paper-button></a></p>
-<h2><strong>Beware of the edge cases</strong></h2>
-<p>As previously mentioned, this code <strong>must not be used in production</strong> because of the many unhandled edge cases.</p>
-<h3><strong>Cache depends on updating the cache key for every change</strong></h3>
-<p>For example this caching method requires you to update the cache key every time content is changed, otherwise, the cache will not be updated, and the old content will be served. So be sure to change the cache key with every change as you&#39;re working on your project!</p>
-<h3><strong>Requires everything to be redownloaded for every change</strong></h3>
-<p>Another downside is that the entire cache is invalidated and needs to be re-downloaded every time a file changes. That means fixing a simple single character spelling mistake will invalidate the cache and require everything to be downloaded again. Not exactly efficient.</p>
-<h3><strong>Browser cache may prevent the service worker cache from updating</strong></h3>
-<p>There&#39;s another important caveat here. It&#39;s crucial that the HTTPS request made during the install handler goes directly to the network and doesn&#39;t return a response from the browser&#39;s cache. Otherwise the browser may return the old, cached version, resulting in the service worker cache never actually updating!</p>
-<h3><strong>Beware of cache-first strategies in production</strong></h3>
-<p>Our app uses a cache-first strategy, which results in a copy of any cached content being returned without consulting the network. While a cache-first strategy is easy to implement, it can cause challenges in the future. Once the copy of the host page and service worker registration is cached, it can be extremely difficult to change the configuration of the service worker (since the configuration depends on where it was defined), and you could find yourself deploying sites that are extremely difficult to update!</p>
-<h3><strong>How do I avoid these edge cases?</strong></h3>
-<p>So how do we avoid these edge cases? Use a library like <a href="https://github.com/GoogleChrome/sw-precache" target="_blank">sw-precache</a>, which provides fine control over what gets expired, ensures requests go directly to the network and handles all of the hard work for you.</p>
-<h2><strong>Tips for testing live service workers</strong></h2>
-<p>Debugging service workers can be a challenge, and when it involves caching, things can become even more of a nightmare if the cache isn&#39;t updated when you expect it. Between the typical service worker life cycle and bug in your code, you may become quickly frustrated. But don&#39;t. There are some tools you can use to make your life easier.</p>
-<h3><strong>Start Fresh</strong></h3>
-<p>In some cases, you may find yourself loading cached data or that things aren&#39;t updated as you expect. To clear all saved data (localStorage, indexedDB data, cached files) and remove any service workers, use the Clear storage pane in the Application tab.</p>
-<p>Some other tips:</p>
-<ul>
-<li>Once a service worker has been unregistered, it may remain listed until its containing browser window is closed.</li>
-<li>If multiple windows to your app are open, the new service worker will not take effect until they&#39;ve all been reloaded and updated to the latest service worker.</li>
-<li>Unregistering a service worker does not clear the cache, so it may be possible you&#39;ll still get old data if the cache name hasn&#39;t changed.</li>
-<li>If a service worker exists and a new service worker is registered, the new service worker won&#39;t take control until the page is reloaded, unless you take <a href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/immediate-control" target="_blank">immediate control</a>.</li>
-</ul>
+    </google-codelab-step>
+
+    <google-codelab-step label="Utiliser un modèle 3D" duration="20">
+      <p>Progressive Web Apps have to be fast, and installable, which means that they work online, offline, and on
+        intermittent, slow connections. To achieve this, we need to cache our app shell using service worker, so that
+        it&#39;s always available quickly and reliably.</p>
+      <p>If you&#39;re unfamiliar with service workers, you can get a basic understanding by reading <a href="https://developers.google.com/web/fundamentals/primers/service-worker/"
+          target="_blank">Introduction To Service Workers</a> about what they can do, how their lifecycle works and
+        more. Once you&#39;ve completed this code lab, be sure to check out the <a href="http://goo.gl/jhXCBy" target="_blank">Debugging
+          Service Workers code lab</a> for a more indepth look at how to work with service workers.</p>
+      <p>The next step is to modify the app and service worker logic to be able to cache weather data, and return the
+        most recent data from the cache when the app is offline.</p>
+      <p><strong>Tip:</strong> To start fresh and clear all saved data (<code>localStorage</code>, <code>indexedDB</code>
+        data, cached files) and remove any service workers, use the Clear storage pane in the Application tab.</p>
+      <p><a href="https://weather-pwa-sample.firebaseapp.com/step-06/" target="_blank">
+          <paper-button class="colored" raised>TRY IT</paper-button>
+        </a></p>
+      <h2><strong>Beware of the edge cases</strong></h2>
+      <p>As previously mentioned, this code <strong>must not be used in production</strong> because of the many
+        unhandled edge cases.</p>
+      <h3><strong>Cache depends on updating the cache key for every change</strong></h3>
+      <p>For example this caching method requires you to update the cache key every time content is changed, otherwise,
+        the cache will not be updated, and the old content will be served. So be sure to change the cache key with
+        every change as you&#39;re working on your project!</p>
+      <h3><strong>Requires everything to be redownloaded for every change</strong></h3>
+      <p>Another downside is that the entire cache is invalidated and needs to be re-downloaded every time a file
+        changes. That means fixing a simple single character spelling mistake will invalidate the cache and require
+        everything to be downloaded again. Not exactly efficient.</p>
+      <h3><strong>Browser cache may prevent the service worker cache from updating</strong></h3>
+      <p>There&#39;s another important caveat here. It&#39;s crucial that the HTTPS request made during the install
+        handler goes directly to the network and doesn&#39;t return a response from the browser&#39;s cache. Otherwise
+        the browser may return the old, cached version, resulting in the service worker cache never actually updating!</p>
+      <h3><strong>Beware of cache-first strategies in production</strong></h3>
+      <p>Our app uses a cache-first strategy, which results in a copy of any cached content being returned without
+        consulting the network. While a cache-first strategy is easy to implement, it can cause challenges in the
+        future. Once the copy of the host page and service worker registration is cached, it can be extremely difficult
+        to change the configuration of the service worker (since the configuration depends on where it was defined),
+        and you could find yourself deploying sites that are extremely difficult to update!</p>
+      <h3><strong>How do I avoid these edge cases?</strong></h3>
+      <p>So how do we avoid these edge cases? Use a library like <a href="https://github.com/GoogleChrome/sw-precache"
+          target="_blank">sw-precache</a>, which provides fine control over what gets expired, ensures requests go
+        directly to the network and handles all of the hard work for you.</p>
+      <h2><strong>Tips for testing live service workers</strong></h2>
+      <p>Debugging service workers can be a challenge, and when it involves caching, things can become even more of a
+        nightmare if the cache isn&#39;t updated when you expect it. Between the typical service worker life cycle and
+        bug in your code, you may become quickly frustrated. But don&#39;t. There are some tools you can use to make
+        your life easier.</p>
+      <h3><strong>Start Fresh</strong></h3>
+      <p>In some cases, you may find yourself loading cached data or that things aren&#39;t updated as you expect. To
+        clear all saved data (localStorage, indexedDB data, cached files) and remove any service workers, use the Clear
+        storage pane in the Application tab.</p>
+      <p>Some other tips:</p>
+      <ul>
+        <li>Once a service worker has been unregistered, it may remain listed until its containing browser window is
+          closed.</li>
+        <li>If multiple windows to your app are open, the new service worker will not take effect until they&#39;ve all
+          been reloaded and updated to the latest service worker.</li>
+        <li>Unregistering a service worker does not clear the cache, so it may be possible you&#39;ll still get old
+          data if the cache name hasn&#39;t changed.</li>
+        <li>If a service worker exists and a new service worker is registered, the new service worker won&#39;t take
+          control until the page is reloaded, unless you take <a href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/immediate-control"
+            target="_blank">immediate control</a>.</li>
+      </ul>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Ajouter les ombres" duration="10">
-        <p>Choosing the right <a href="https://jakearchibald.com/2014/offline-cookbook/" target="_blank">caching strategy</a> for your data is vital and depends on the type of data your app presents. For example, time-sensitive data like weather or stock quotes should be as fresh as possible, while avatar images or article content can be updated less frequently.</p>
-<p>The <a href="https://jakearchibald.com/2014/offline-cookbook/#cache-network-race" target="_blank">cache-first-then-network</a> strategy is ideal for our app. It gets data on screen as quickly as possible, then updates that once the network has returned the latest data. In comparison to network-first-then-cache, the user does not have to wait until the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">fetch</a> times out to get the cached data.</p>
-<p>Cache-first-then-network means we need to kick off two asynchronous requests, one to the cache and one to the network. Our network request with the app doesn&#39;t need to change much, but we need to modify the service worker to cache the response before returning it.</p>
-<p>Under normal circumstances, the cached data will be returned almost immediately providing the app with recent data it can use. Then, when the network request returns, the app will be updated using the latest data from the network.</p>
-<h2><strong>Intercept the network request and cache the response</strong></h2>
-<p>We need to modify the service worker to intercept requests to the weather API and store their responses in the cache, so we can easily access them later. In the cache-then-network strategy, we expect the network response to be the ‘source of truth&#39;, always providing us with the most recent information. If it can&#39;t, it&#39;s OK to fail because we&#39;ve already retrieved the latest cached data in our app.</p>
-<p>In the service worker, let&#39;s add a <code>dataCacheName</code> so that we can separate our applications data from the app shell. When the app shell is updated and older caches are purged, our data will remain untouched, ready for a super fast load. Keep in mind, if your data format changes in the future, you&#39;ll need a way to handle that and ensure the app shell and content stay in sync.</p>
-<p>Add the following line to the top of your <code>service-worker.js</code> file:</p>
-<pre><code>var dataCacheName = &#39;weatherData-v1&#39;;</code></pre>
-<p>Next, update the <code>activate</code> event handler so that it doesn&#39;t delete the data cache when it cleans up the app shell cache.</p>
-<pre><code>if (key !== cacheName &amp;&amp; key !== dataCacheName) {</code></pre>
-<p>Finally, update the <code>fetch</code> event handler to handle requests to the data API separately from other requests.</p>
-<pre><code>self.addEventListener(&#39;fetch&#39;, function(e) {
+    </google-codelab-step>
+
+    <google-codelab-step label="Ajouter les ombres" duration="10">
+      <p>Choosing the right <a href="https://jakearchibald.com/2014/offline-cookbook/" target="_blank">caching strategy</a>
+        for your data is vital and depends on the type of data your app presents. For example, time-sensitive data like
+        weather or stock quotes should be as fresh as possible, while avatar images or article content can be updated
+        less frequently.</p>
+      <p>The <a href="https://jakearchibald.com/2014/offline-cookbook/#cache-network-race" target="_blank">cache-first-then-network</a>
+        strategy is ideal for our app. It gets data on screen as quickly as possible, then updates that once the
+        network has returned the latest data. In comparison to network-first-then-cache, the user does not have to wait
+        until the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">fetch</a> times
+        out to get the cached data.</p>
+      <p>Cache-first-then-network means we need to kick off two asynchronous requests, one to the cache and one to the
+        network. Our network request with the app doesn&#39;t need to change much, but we need to modify the service
+        worker to cache the response before returning it.</p>
+      <p>Under normal circumstances, the cached data will be returned almost immediately providing the app with recent
+        data it can use. Then, when the network request returns, the app will be updated using the latest data from the
+        network.</p>
+      <h2><strong>Intercept the network request and cache the response</strong></h2>
+      <p>We need to modify the service worker to intercept requests to the weather API and store their responses in the
+        cache, so we can easily access them later. In the cache-then-network strategy, we expect the network response
+        to be the ‘source of truth&#39;, always providing us with the most recent information. If it can&#39;t,
+        it&#39;s OK to fail because we&#39;ve already retrieved the latest cached data in our app.</p>
+      <p>In the service worker, let&#39;s add a <code>dataCacheName</code> so that we can separate our applications
+        data from the app shell. When the app shell is updated and older caches are purged, our data will remain
+        untouched, ready for a super fast load. Keep in mind, if your data format changes in the future, you&#39;ll
+        need a way to handle that and ensure the app shell and content stay in sync.</p>
+      <p>Add the following line to the top of your <code>service-worker.js</code> file:</p>
+      <pre><code>var dataCacheName = &#39;weatherData-v1&#39;;</code></pre>
+      <p>Next, update the <code>activate</code> event handler so that it doesn&#39;t delete the data cache when it
+        cleans up the app shell cache.</p>
+      <pre><code>if (key !== cacheName &amp;&amp; key !== dataCacheName) {</code></pre>
+      <p>Finally, update the <code>fetch</code> event handler to handle requests to the data API separately from other
+        requests.</p>
+      <pre><code>self.addEventListener(&#39;fetch&#39;, function(e) {
   console.log(&#39;[Service Worker] Fetch&#39;, e.request.url);
   var dataUrl = &#39;https://query.yahooapis.com/v1/public/yql&#39;;
   if (e.request.url.indexOf(dataUrl) &gt; -1) {
@@ -366,40 +542,58 @@
 </code></pre>
 
 
-      </google-codelab-step>
-    
-      <google-codelab-step label="Crédits et ressources additionnels" duration="0">
-        <p>Nous avons maintenant nos gâteaux chargés et affichés sur une surface dans le monde réel, avec des ombres. La méthode <code>requestHitTest</code> de l&#39;API WebXR est la première méthode implémentée permettant la compréhension du monde réel, mais dans le futur, il sera possible de mesurer la lumière ambiante, les surfaces et les informations de profondeur, mais aussi des nuages de points par exemple.</p>
-<p>Ces capacités vous nous permettre d&#39;intégrer encore plus facilement nos objets dans le monde réel. Par exemple, l&#39;estimation de lumière va s&#39;accorder avec les ombres du modèles dans le monde réel, et les données de profondeur nous donnerons la possibilité de cacher des objets numériques quand certains objets réels seront en face. Ce qui reste en cours de spécification dans l&#39;API WebXR est la notion d&#39;<a href="https://github.com/immersive-web/anchors" target="_blank">ancres</a>, avec la possibilité de suivre des objets du monde réel et plus précisément la position d&#39;objets dans une scène.</p>
-<h2><strong>Crédits additionnels : choisissez votre propre modèle</strong></h2>
-<p>Vous pouvez trouver d&#39;autres modèles sur les sites : <a href="https://poly.google.com/" target="_blank">Poly</a> et <a href="https://sketchfab.com/" target="_blank">SketchFab</a>.</p>
-<h2>Ressources</h2>
-<ul>
-<li><a href="https://immersive-web.github.io/webxr/" target="_blank">WebXR Device API Specification</a></li>
-<li><a href="https://github.com/immersive-web/webxr-samples" target="_blank">WebXR Samples</a></li>
-<li><a href="https://poly.google.com/" target="_blank">Poly</a></li>
-<li><a href="https://sketchfab.com/" target="_blank">SketchFab</a></li>
-<li><a href="https://github.com/immersive-web/hit-test" target="_blank">Hit Test proposal for WebXR</a></li>
-<li><a href="https://github.com/immersive-web/anchors" target="_blank">Anchor proposal for WebXR</a></li>
-<li><a href="http://threejs.org/" target="_blank">three.js</a></li>
-</ul>
+    </google-codelab-step>
+
+    <google-codelab-step label="Crédits et ressources additionnels" duration="0">
+      <p>Nous avons maintenant nos gâteaux chargés et affichés sur une surface dans le monde réel, avec des ombres. La
+        méthode <code>requestHitTest</code> de l&#39;API WebXR est la première méthode implémentée permettant la
+        compréhension du monde réel, mais dans le futur, il sera possible de mesurer la lumière ambiante, les surfaces
+        et les informations de profondeur, mais aussi des nuages de points par exemple.</p>
+      <p>Ces capacités vous nous permettre d&#39;intégrer encore plus facilement nos objets dans le monde réel. Par
+        exemple, l&#39;estimation de lumière va s&#39;accorder avec les ombres du modèles dans le monde réel, et les
+        données de profondeur nous donnerons la possibilité de cacher des objets numériques quand certains objets réels
+        seront en face. Ce qui reste en cours de spécification dans l&#39;API WebXR est la notion d&#39;<a href="https://github.com/immersive-web/anchors"
+          target="_blank">ancres</a>, avec la possibilité de suivre des objets du monde réel et plus précisément la
+        position d&#39;objets dans une scène.</p>
+      <h2><strong>Crédits additionnels : choisissez votre propre modèle</strong></h2>
+      <p>Vous pouvez trouver d&#39;autres modèles sur les sites : <a href="https://poly.google.com/" target="_blank">Poly</a>
+        et <a href="https://sketchfab.com/" target="_blank">SketchFab</a>.</p>
+      <h2>Ressources</h2>
+      <ul>
+        <li><a href="https://immersive-web.github.io/webxr/" target="_blank">WebXR Device API Specification</a></li>
+        <li><a href="https://github.com/immersive-web/webxr-samples" target="_blank">WebXR Samples</a></li>
+        <li><a href="https://poly.google.com/" target="_blank">Poly</a></li>
+        <li><a href="https://sketchfab.com/" target="_blank">SketchFab</a></li>
+        <li><a href="https://github.com/immersive-web/hit-test" target="_blank">Hit Test proposal for WebXR</a></li>
+        <li><a href="https://github.com/immersive-web/anchors" target="_blank">Anchor proposal for WebXR</a></li>
+        <li><a href="http://threejs.org/" target="_blank">three.js</a></li>
+      </ul>
 
 
-      </google-codelab-step>
-    
+    </google-codelab-step>
+
   </google-codelab>
 
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
     ga('create', 'UA-49880327-14', 'auto');
 
     (function() {
       var gaCodelab = '';
       if (gaCodelab) {
-        ga('create', gaCodelab, 'auto', {name: 'codelab'});
+        ga('create', gaCodelab, 'auto', {
+          name: 'codelab'
+        });
       }
 
       var gaView;
@@ -412,10 +606,13 @@
         }
       }
       if (gaView && gaView !== gaCodelab) {
-        ga('create', gaView, 'auto', {name: 'view'});
+        ga('create', gaView, 'auto', {
+          name: 'view'
+        });
       }
     })();
   </script>
 
 </body>
+
 </html>
