@@ -26,12 +26,13 @@
     <google-codelab-step label="Introduction" duration="5">
       <p>Ce codelab est un exemple pas à pas de conception d&#39;une application web AR. Elle utilise JavaScript pour
         réaliser le rendu de modèles 3D qui apparaissent comme s&#39;ils existaient dans la réalité.</p>
-      <p>Vous allez utilisez l&#39;API en cours de développement <a href="https://immersive-web.github.io/webxr/"
+      <p>Vous allez utiliser l&#39;API en cours de développement <a href="https://immersive-web.github.io/webxr/"
           target="_blank">WebXR</a>, (l&#39;API qui succède à l&#39;API <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVR_API"
           target="_blank">WebVR</a>), qui combine les fonctionnalitées de la réalité augmentée (AR) et la réalité
         virtuelle (VR). Nous allons nous focaliser sur les extensions expérimentales AR de l&#39;API WebXR Device qui
         sont en développement dans Chrome.</p>
-      <p><img style="max-width: 624.00px" src="img/39e11a014e7dedce.png"></p>
+      <p>Quelques slides sont disponibles sur ce lien pour une explication de cette API : <a href="https://slides.com/vogloblinsky/webxr-api-virtual-augmented-mixed-reality-and-the-immersive-web/"
+          target="_blank">Slides</a></p>
       <h2><strong>Qu&#39;est-ce que la réalité augmentée?</strong></h2>
       <p>La réalitée augmentée (AR) est un terme généralement utilisé pour décrire le mélange de graphiques générés par
         ordinateur avec le monde réel, ce qui, dans le cas de la réalité augmentée avec un téléphone, veut dire placer
@@ -63,7 +64,7 @@
             </ol>
           </td>
           <td colspan="1" rowspan="1">
-            <p><img style="max-width: 298.00px" src="img/4231321fd1370e.png"></p>
+            <p><img style="max-width: 298.00px" src="img/99ee498cbe7b4907.png"></p>
           </td>
         </tr>
       </table>
@@ -247,7 +248,7 @@
       <p>Une fois que tout fonctionne bien, vous devriez voir une scène avec des cubes surplombant le flux vidéo de
         votre appareil photo. La compréhension de l‘environnement s&#39;améliore à mesure que vous vous déplacez et
         bougez votre téléphone, cela aide à stabiliser les choses.</p>
-      <p><img style="max-width: 624.00px" src="img/ad7b449dfa736f.png"></p>
+      <p><img style="max-width: 624.00px" src="img/254f5496dacb417f.png"></p>
       <aside class="warning">
         <p><strong>Important</strong> : Pour des raisons de sécurités, l&#39;API WebXR n&#39;est utilisable que sur un
           domaine en HTTPS, avec une exception pour localhost. Si vous avez des difficultées à activer WebXR, vérifiez
@@ -262,284 +263,631 @@
 
     <google-codelab-step label="Statut de la réalité augmentée dans le web" duration="5">
       <h2><strong>Histoire</strong></h2>
-      <p>The app&#39;s shell is the minimal HTML, CSS, and JavaScript that is required to power the user interface of a
-        progressive web app and is one of the components that ensures reliably good performance. Its first load should
-        be extremely quick and immediately cached. &#34;Cached&#34; means that the shell files are loaded once over the
-        network and then saved to the local device. Every subsequent time that the user opens the app, the shell files
-        are loaded from the local device&#39;s cache, which results in blazing-fast startup times. </p>
-      <p>App shell architecture separates the core application infrastructure and UI from the data. All of the UI and
-        infrastructure is cached locally using a <a href="https://developers.google.com/web/fundamentals/getting-started/primers/service-workers"
-          target="_blank">service worker</a> so that on subsequent loads, the Progressive Web App only needs to
-        retrieve the necessary data, instead of having to load everything.</p>
+      <p><a href="https://developer.mozilla.org/docs/Web/API/WebGL_API" target="_blank">WebGL</a> est librairie
+        graphique puissante permettant le rendu de contenu 3D dans un navigateur web, mais l&#39;accès aux
+        périphériques VR est nécessaire pour connaître et se synchroniser avec la fréquence d&#39;affichage des écrans.
+        L&#39;API expérimentale <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebVR_API" target="_blank">WebVR
+          1.1</a> a été implémentée dans les navigateurs au fur et à mesure que les développeurs construisaient des
+        application VR pour le web. Cela a posé les bases permettant le rendu stéréoscopique de scène web avec les
+        distorsions appropriées aux casques VR. Les périphériques compatibles <a href="https://vr.google.com/daydream/"
+          target="_blank">Daydream</a> et <a href="http://www.samsung.com/global/galaxy/gear-vr/" target="_blank">GearVR</a>
+        mais aussi les périphériques comme l&#39;<a href="https://www.oculus.com/rift/" target="_blank">Oculus Rift</a>
+        ou <a href="https://www.vive.com/" target="_blank">HTC Vive</a> sont ceux supportés par la majorité des
+        navigateurs.</p>
+      <p>Les cas d&#39;usages évoluant, le support de l&#39;AR dans le web devint une nécessité. A cause d&#39;une
+        grande similarité entre les technologies AR et VR, l&#39;API <a href="https://immersive-web.github.io/webxr/"
+          target="_blank">WebXR</a> fut créée pour englober et supporter ces 2 domaines. Malgré son statut en cours de
+        développement et donc sujette à des changements, le coeur de l&#39;API est stable, et est en cours de
+        développement et d&#39;implémentation par la majorité des éditeurs de navigateurs web. L&#39;API supporte les
+        expériences VR, et les propositions initiales AR sont en cours de prototypages et d&#39;exploration. </p>
       <h2><strong>Implémentation</strong></h2>
-      <p>Using the app shell architecture allows you to focus on speed, giving your Progressive Web App similar
-        properties to native apps: instant loading and regular updates, all without the need of an app store.</p>
+      <p>La première implémentation de l&#39;API WebXR est disponible dans Chrome depuis la version 67 derrière un
+        drapeau (<code>#webxr</code>) mais aussi sur une &#34;<a href="https://github.com/GoogleChrome/OriginTrials"
+          target="_blank"><em>origin trial</em></a>&#34;. Les fonctions AR initiales sont disponibles dans Chrome
+        depuis la version 70 derrière un drapeau (<code>#webxr-hit-test</code>). A l&#39;heure de l&#39;écriture de ce
+        codelab, la majorité des navigateurs web supportant l&#39;API WebVR ont assurés de leur support dans le futur
+        de l&#39;API WebXR.</p>
       <h2><strong>Le futur</strong></h2>
-      <p>TODO</p>
+      <p>La seule fonctionnalité de compréhension d&#39;une scène actuellement disponible dans un navigateur est le
+        &#34;test de collision&#34;. Cela permet &#34;to cast a ray out from the device&#34;, c&#39;est-à-dire, à
+        partir d&#39;un tapotement de doigt sur l&#39;écran, de retourner les coordonnées des collisions découvertes
+        dans le monde réel, nous donnant la possibilité d&#39;utiliser ces informations pour afficher des couches
+        virtuelles.</p>
+      <p>Les explorations futures permettront une meilleure compréhension des scènes, comme l&#39;estimation de
+        luminosité, des surfaces, nuages de points etc.</p>
 
 
     </google-codelab-step>
 
     <google-codelab-step label="Structure d&#39;une application AR" duration="15">
-      <p>There are multiple ways to get started with any project, in this case, to keep our project as simple as
-        possible and concentrate on Progressive Web Apps, we&#39;ve provided you with all of the resources you&#39;ll
-        need.</p>
-      <h2><strong>Create the HTML for the App Shell</strong></h2>
-      <p>Now we&#39;ll add the core components we discussed in <a href="https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp#architect_your_app_shell"
-          target="_blank">Architect the App Shell</a>.</p>
-      <p>Remember, the key components will consist of:</p>
-      <ul>
-        <li>Header with a title, and add/refresh buttons</li>
-        <li>Container for forecast cards</li>
-        <li>A forecast card template</li>
-        <li>A dialog for adding new cities</li>
-        <li>A loading indicator</li>
-      </ul>
-      <p>The <code>index.html</code> file that is already in your <code>work</code> directory should look something
-        like this (this is a subset of the actual contents, don&#39;t copy this code into your file):</p>
+      <p>Placez-vous dans le dossier de travail <code>work</code>.</p>
+      <p>Nous vous fournissons une base de travail avec une page HTML, du style CSS et un fichier JavaScript. Cette
+        base vous permet également d&#39;activer les fonctionnalités AR d&#39;affichage et de rendu en synchro avec la
+        position du téléphone.</p>
+      <aside class="special">
+        <p>Nous fournissons cette base de travail pour vous permettres de démarrer rapidement le codelab et de vous
+          focaliser sur la partie AR. Si vous êtes déjà familier avec l&#39;API WebXR, passez à la section suivante.</p>
+      </aside>
+      <h2><strong>La page HTML</strong></h2>
+      <p>Nous allons concevoir une expérience AR avec une page web traditionnelle en utilisant les technologies web.
+        Dans cette expérience, nous allons utiliser une canvas en plein écran, notre page HTML n&#39;a donc pas besoin
+        d&#39;une grande complexité de code. La partie CSS s&#39;assure que notre <code>&lt;canvas&gt;</code> injecté
+        par notre librairie graphique est bien en plein écran.</p>
+      <p>Les fonctionnalités AR requiert une interaction utilisateur minium de type gestuelle pour démarrer, nous
+        utilisons donc certains éléments <a href="https://getmdl.io/" target="_blank">Material Design Lite</a> pour
+        afficher un bouton <em>&#34;Démarrez l&#39;expérience&#34;</em> ou un message de <em>&#34;non support&#34;</em>
+        du navigateur.</p>
+      <p>La page <code>index.html</code> qui se trouve dans le dossier <code>work</code> doit ressembler à cela. (Ceci
+        est un exemple de code, préférez le code venant du dépôt Github qui sera peut-être plus à jour, ne copiez pas
+        ce code dans votre fichier):</p>
       <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
   &lt;meta charset=&#34;utf-8&#34;&gt;
   &lt;meta http-equiv=&#34;X-UA-Compatible&#34; content=&#34;IE=edge&#34;&gt;
   &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
-  &lt;title&gt;Weather PWA&lt;/title&gt;
-  &lt;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;styles/inline.css&#34;&gt;
+  &lt;title&gt;Building an augmented reality application with the WebXR Device API&lt;/title&gt;
+  &lt;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;../shared/app.css&#34;&gt;
+&lt;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;../third_party/mdl/material.min.css&#34;&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  &lt;header class=&#34;header&#34;&gt;
-    &lt;h1 class=&#34;header__title&#34;&gt;Weather PWA&lt;/h1&gt;
-    &lt;button id=&#34;butRefresh&#34; class=&#34;headerButton&#34;&gt;&lt;/button&gt;
-    &lt;button id=&#34;butAdd&#34; class=&#34;headerButton&#34;&gt;&lt;/button&gt;
-  &lt;/header&gt;
-
-  &lt;main class=&#34;main&#34;&gt;
-    &lt;div class=&#34;card cardTemplate weather-forecast&#34; hidden&gt;
-    . . .
-    &lt;/div&gt;
-  &lt;/main&gt;
-
-  &lt;div class=&#34;dialog-container&#34;&gt;
-  . . .
+  &lt;div id=&#34;enter-ar-info&#34; class=&#34;demo-card mdl-card mdl-shadow--4dp&#34;&gt;
+      &lt;!-- Material Design elements for demo --&gt; 
+      &lt;!-- ... --&gt;
   &lt;/div&gt;
-
-  &lt;div class=&#34;loader&#34;&gt;
-    &lt;svg viewBox=&#34;0 0 32 32&#34; width=&#34;32&#34; height=&#34;32&#34;&gt;
-      &lt;circle id=&#34;spinner&#34; cx=&#34;16&#34; cy=&#34;16&#34; r=&#34;14&#34; fill=&#34;none&#34;&gt;&lt;/circle&gt;
-    &lt;/svg&gt;
-  &lt;/div&gt;
-
-  &lt;!-- Insert link to app.js here --&gt;
+  &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../shared/utils.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;app.js&#34;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-      <p>Notice the loader is visible by default. This ensures that the user sees the loader immediately as the page
-        loads, giving them a clear indication that the content is loading.</p>
-      <p>To save time, we&#39;ve also already created the stylesheet for you to use.</p>
+      <h2><strong>Découvrez la base de code JavaScript</strong></h2>
+      <p>Notre application est un mélange d&#39;utilisation de la librairie 3D JavaScript <a href="http://threejs.org/"
+          target="_blank">three.js</a>, quelques fonctions utilitaires et du code spécifique WebXR dans <code>app.js</code>.
+        Découvrons en détail de squelette de code.</p>
       <aside class="special">
-        <p>We&#39;ve given you the markup and styles to save you some time and make sure you&#39;re starting on a solid
-          foundation. In the next section, you&#39;ll have an opportunity to write your own code.</p>
+        <p>Ce squelette de code utilise la syntaxe async/await. Si vous n&#39;êtes pas familier avec cette syntaxe,
+          lisez cet article : <a href="https://developers.google.com/web/fundamentals/primers/async-functions" target="_blank">Async
+            functions - making promises friendly</a></p>
       </aside>
-      <h2><strong>Check out the key JavaScript app code</strong></h2>
-      <p>Now that we have most of the UI ready, it&#39;s time to start hooking up the code to make everything work.
-        Like the rest of the app shell, be conscious about what code is necessary as part of the key experience and
-        what can be loaded later.</p>
-      <p>Your work directory also already includes the app code (<code>scripts/app.js</code>), in it you&#39;ll find:</p>
+      <aside class="warning">
+        <p>L&#39;API WebXR étant en constante évolution, le code source de ce codelab reflète la version de fin octobre
+          2018, disponible ici : <a href="https://web.archive.org/web/20181031042404/https://immersive-web.github.io/webxr/"
+            target="_blank">https://web.archive.org/web/20181031042404/https://immersive-web.github.io/webxr/</a></p>
+      </aside>
+      <p>Votre dossier work contient un fichier <code>app.js</code> dans lequel vous allez trouver la classe <code>App</code>
+        :</p>
+      <pre><code>class App {
+  constructor() {
+    ...
+  }
+
+  async init() {
+    ...
+  }
+
+  async onEnterAR() {
+    ...
+  }
+
+  onNoXRDevice() {
+    ...
+  }
+
+  async onSessionStarted(session) {
+   ...
+  }
+
+  onXRFrame(time, frame) {
+    ...
+  }
+};
+
+window.app = new App();</code></pre>
+      <p>Nous instancions notre application et la stockons dans <code>window.app</code> par facilité pour le débogage
+        avec <a href="https://developer.chrome.com/devtools" target="_blank">Chrome DevTools</a>.</p>
+      <p>Notre constructeur appelle <code>this.init()</code> qui est une fonction async qui va démarrer notre session
+        <a href="https://immersive-web.github.io/webxr/#xrsession-interface" target="_blank">XRSession</a> pour
+        travailler en AR.</p>
+      <p>Cette fonction vérifie l&#39;existence de <code>navigator.xr</code>, le point d&#39;entrée de l&#39;API WebXR,
+        mais aussi de la présence de <code>XRSession.prototype.requestHitTest</code>, la fonctionnalité AR activée par
+        le drapeau Chrome <code>webxr-hit-test</code>.</p>
       <ul>
-        <li>An <code>app</code> object that contains some of the key information necessary for the app.</li>
-        <li>The event listeners for all of the buttons in the header (<code>add/refresh</code>) and in the add city
-          dialog (<code>add/cancel</code>).</li>
-        <li>A method to add or update forecast cards (<code>app.updateForecastCard</code>).</li>
-        <li>A method to get the latest weather forecast data from the Firebase Public Weather API (<code>app.getForecast</code>).</li>
-        <li>A method to iterate the current cards and call <code>app.getForecast</code> to get the latest forecast data
-          (<code>app.updateForecasts</code>).</li>
-        <li>Some fake data (<code>initialWeatherForecast</code>) you can use to quickly test how things render.</li>
+        <li>si les 2 objets existent, nous pouvons demander la mise à disposition du device, via <code>navigator.xr.requestDevice()</code>
+          qui retourne une promesse qui renvoie une <a href="https://immersive-web.github.io/webxr/#xrdevice-interface"
+            target="_blank">XRDevice</a>, ou sinon échoue si non trouvé.</li>
+        <li>si un des 2 objets n&#39;existent pas, nous appelons la méthode <code>this.onNoXRDevice()</code> qui
+          affiche un message de &#34;non support AR&#34; à l&#39;utilisateur.</li>
       </ul>
-      <h2><strong>Test it out</strong></h2>
-      <p>Now that you&#39;ve got the core HTML, styles and JavaScript, it&#39;s time to test the app.</p>
-      <p>To see how the fake weather data is rendered, uncomment the following line at the bottom of your <code>index.html</code>
-        file:</p>
-      <pre>&lt;!--&lt;script src=&#34;scripts/app.js&#34; async&gt;&lt;/script&gt;--&gt;</pre>
-      <p>Next, uncomment the following line at the bottom of your <code>app.js</code> file:</p>
-      <pre>// app.updateForecastCard(initialWeatherForecast);</pre>
-      <p>Reload your app. The result should be a nicely formatted (though fake, as you can tell by the date) forecast
-        card with the spinner disabled, like this:</p>
-      <p><img style="max-width: 243.85px" src="img/166c3b4982e4a0ad.png"></p>
-      <p><a href="https://weather-pwa-sample.firebaseapp.com/step-04/" target="_blank">
-          <paper-button class="colored" raised>TRY IT</paper-button>
+      <p>Si tout va bien, nous connectons le click du bouton pour tenter de créer ensuite une session XR avec un
+        écouteur de click.</p>
+      <pre><code>class App {
+  ...
+  async init() {
+    if (navigator.xr &amp;&amp; XRSession.prototype.requestHitTest) {
+      try {
+        this.device = await navigator.xr.requestDevice();
+      } catch (e) {
+        this.onNoXRDevice();
+        return;
+      }
+    } else {
+      this.onNoXRDevice();
+      return;
+    }
+
+    document.querySelector(&#39;#enter-ar&#39;).addEventListener(&#39;click&#39;, this.onEnterAR);
+  }
+}</code></pre>
+      <aside class="special">
+        <p>Même si l&#39;API WebXR est supportée par le navigateur, cela ne veut pas dire que c&#39;est une XRDevice
+          valide. Par exemple, un navigateur desktop peut implémenter l&#39;API mais ne pas avoir de matériel AR ou VR
+          de connecté pour supporter l&#39;expérience. Lisez-en plus sur l&#39;énumération des périĥériques dans la <a
+            href="https://immersive-web.github.io/webxr/#deviceenumeration" target="_blank">spécification WebXR</a>.</p>
+      </aside>
+      <p>Quand nous avons détecté une <code>XRDevice</code>, nous la stockons dans la propriété <code>this.device</code>.
+        Dans le but d&#39;interagir avec ce périphérique, nous devons lui demander une XRSession. Une XRDevice peut
+        avoir plusieurs XRSessions, dans chaque session est exposé la position du périphérique, l&#39;environnement de
+        l&#39;utilisateur et gère le rendu du périphérique.</p>
+      <p>Nous voulons que la sortie de cette session soit affichée dans notre page, nous devons donc créer un <code>XRPresentationContext</code>,
+        similaire à un contexte WebGL <code>WebGLRenderingContext</code> si nous faisions nous même directement un
+        rendu WebGL.</p>
+      <pre><code>class App {
+  ...
+  async onEnterAR() {
+    const outputCanvas = document.createElement(&#39;canvas&#39;);
+    const ctx = outputCanvas.getContext(&#39;xrpresent&#39;);
+    
+    try {
+      const session = await this.device.requestSession({
+        outputContext: ctx,
+        environmentIntegration: true,
+      });
+      document.body.appendChild(outputCanvas);
+      this.onSessionStarted(session);
+    } catch (e) {
+      this.onNoXRDevice();
+    }
+  }
+}</code></pre>
+      <p>En appelant <code>getContext(‘xrprese</code>nt&#39;) sur notre canvas, cela va nous renvoyer un <code>XRPresentationContext</code>,
+        qui est le contexte dans lequel le rendu de notre périphérique AR va être affiché. Ensuite nous demandons une
+        session via <code>requestSession()</code> sur notre périphérique XR avec notre contexte de présentation, en
+        ajoutant le drapeau <code>environmentIntegration</code> indiquant que nous voulons les fonctionnalités AR, et
+        nous attendons la résolution de la promesse.</p>
+      <ul>
+        <li>si elle est résolue, nous ajoutons le canvas au DOM et appelons notre méthode <code>this.onSessionStarted()</code>
+          avec notre nouvelle session <a href="https://immersive-web.github.io/webxr/#xrsession-interface" target="_blank">XRSession</a>.</li>
+        <li>si elle échoue, nous affichons notre message d&#39;erreur avec la méthode <code>this.onNoXRDevice()</code></li>
+      </ul>
+      <aside class="warning">
+        <p><strong>Important</strong> : avant d&#39;appeler <code>device.requestSession()</code> nous devons
+          obligatoirement appeler <code>device.supportsSession()</code> avec nos options pour voir si notre
+          configuration est supportée.</p>
+      </aside>
+      <p>Dès que nous avons notre XRSession, nous sommes prêt à mettre en place le rendu avec <a href="http://threejs.org/"
+          target="_blank">three.js</a> et lancer notre boucle de rendu. Nous créons un WebGLRenderer three.js, qui va
+        contenir notre second canvas, en s&#39;assurant que les options <code>alpha</code> et <code>preserveDrawingBuffer</code>
+        sont activées. Nous utilisons le WebGLRederingContext venant de three.js et de manière asynchrone activons le
+        <a href="https://immersive-web.github.io/webxr/#contextcompatibility" target="_blank">périphérique XR
+          compatible</a>. Une fois le contexte considéré comme compatible avec le périphérique, nous pouvons créer une
+        couche <a href="https://immersive-web.github.io/webxr/#xrwebgllayer-interface" target="_blank"><code>XRWebGLLayer</code></a>,
+        et le mettre en place comme <code>baseLayer</code> de de notre XRSession. Cela dit à notre session que nous
+        voulons utiliser ce contexte pour dessiner notre scène, qui va indirectement être affichée dans le canvas créé
+        dans <code>this.init()</code>, mélanger avec le flux de notre caméra photo.</p>
+      <p>Pour dessiner une scène three.js nous avons besoin de 3 composants : un WebGLRenderer pour gérer le rendu, une
+        scène contenant des objets à afficher, et une caméra pour indiquer la perspective avec laquelle la scène doit
+        être affichée. Nous allons utiliser une scène créée à partir de <code>DemoUtils.createCubeScene()</code> pour
+        pré-remplir la scène avec des cubes flottant dans l&#39;espace. Si vous n&#39;avez pas travailler avec three.js
+        ou WebGL avant, pas de soucis ! Si vous avez des problèmes de rendu, comparer votre code avec les examples.</p>
+      <p>Avant que nous démarrions notre boucle de rendu, nous avons besoin d&#39;obtenir une trame de référence <a
+          href="https://immersive-web.github.io/webxr/#xrframeofreference-interface" target="_blank">XRFrameOfReference</a>
+        avec la valeur <code>‘eye-le</code>vel&#39;, indiquant que notre périphérique est en train de suivre sa
+        position (en comparaison d&#39;expériences travaillant avec l&#39;orientation comme DayDream ou GearVR). Une
+        fois que nous avons notre trame de référence, nous pouvons utiliser la méthode <code>requestAnimationFrame</code>
+        de notre XRSession pour démarrer notre boucle de rendu, de manière similaire à <code>window.requestAnimationFrame</code>.</p>
+      <pre><code>class App {
+  ...
+  async onSessionStarted(session) {
+    this.session = session;
+
+    document.body.classList.add(&#39;ar&#39;);
+    
+    this.renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      preserveDrawingBuffer: true,
+    });
+    this.renderer.autoClear = false;
+
+    this.gl = this.renderer.getContext();
+    
+    await this.gl.setCompatibleXRDevice(this.session.device);
+  
+    this.session.baseLayer = new XRWebGLLayer(this.session, this.gl);
+
+    this.scene = DemoUtils.createCubeScene();
+
+    this.camera = new THREE.PerspectiveCamera();
+    this.camera.matrixAutoUpdate = false;
+
+    this.frameOfRef = await this.session.requestFrameOfReference(&#39;eye-level&#39;);
+    this.session.requestAnimationFrame(this.onXRFrame);
+  }
+}</code></pre>
+      <aside class="special">
+        <p>La méthode <code>requestAnimationFrame</code> de notre XRSession permet de s&#39;accrocher sur la fréquence
+          d&#39;affichage du périphérique XRDevice. Les boucles de rendu des pages web standards sont conçues pour du
+          60 FPS, alors que des périphériques externes vont faire des rendus en 120 FPS.</p>
+      </aside>
+      <p>Sur chaque image, <code>this.onXRFrame</code> est appelée avec un timestamp et une <a href="https://immersive-web.github.io/webxr/#xrpresentationframe"
+          target="_blank">XRPresentationFrame</a>. De notre objet frame, nous obtenons un objet <a href="https://immersive-web.github.io/webxr/#xrdevicepose-interface"
+          target="_blank">XRDevicePose</a>, qui décrit la position et l&#39;orientation dans l&#39;espace, et un
+        tableau de vues XRViews, qui décrivent chaque point de vue à partir desquels nous devons dessiner la scène pour
+        afficher correctement et dans le bon ordre les choses sur le périphérique.</p>
+      <p>Premièrement, nous devons récupérer la position courante et s&#39;inscrire dans la file d&#39;attente
+        d&#39;animation en appelant <code>session.requestAnimationFrame(this.onXRFrame)</code> avant que nous fassions
+        un rendu. Les rendus stéréoscopique VR ont 2 vues (une pour chaque oeil), nous allons seulement afficher une
+        vue comme nous affichons une expérience AR plein écran. Pour faire le rendu, nous allons boucler sur chaque vue
+        et mettre en place la caméra en utilisant une matrice de projection en fonction des données de positionnement
+        fournis. Cela synchronise la position virtuelle de la caméra et son orientation avec la position/orientation
+        physique estimée de notre périphérique. Ensuite nous pouvons dire à notre renderer de faire le rendu de la
+        scène avec la caméra appropriée.</p>
+      <pre><code>class App {
+  ...
+  onXRFrame(time, frame) {
+    const session = frame.session;
+    const pose = frame.getDevicePose(this.frameOfRef);
+
+    session.requestAnimationFrame(this.onXRFrame);
+
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.session.baseLayer.framebuffer);
+
+    if (pose) {
+      for (let view of frame.views) {
+        const viewport = session.baseLayer.getViewport(view);
+        this.renderer.setSize(viewport.width, viewport.height);
+
+        this.camera.projectionMatrix.fromArray(view.projectionMatrix);
+        const viewMatrix = new THREE.Matrix4().fromArray(pose.getViewMatrix(view));
+        this.camera.matrix.getInverse(viewMatrix);
+        this.camera.updateMatrixWorld(true);
+
+        this.renderer.clearDepth();
+
+        this.renderer.render(this.scene, this.camera);
+      }
+    }
+  }
+}</code></pre>
+      <p>Et c&#39;est tout... ;) </p>
+      <p>Nous avons parcouru le code permettant :</p>
+      <ul>
+        <li>récupérer un périphérique XRDevice</li>
+        <li>créer une session</li>
+        <li>faire le rendu de la scène sur chaque image</li>
+        <li>mettre à jour la position de notre caméra virtuelle avec la position physique estimée du périphérique</li>
+      </ul>
+      <h2><strong>Testez votre code</strong></h2>
+      <p>Maintenant que nous avons parcouru ce squelette, découvrons le en action. Vous devriez voir le flux de votre
+        caméra avec des cubes flottant dans l&#39;espace et dont la perspective changent quand vous vous déplacez. Le
+        tracking s&#39;améliore au fur et à mesure que vous vous déplacez dans l&#39;espace.</p>
+      <p><img style="max-width: 624.00px" src="img/254f5496dacb417f.png"></p>
+      <p><a href="https://vogloblinsky.github.io/webxr-codelab/work" target="_blank">
+          <paper-button class="colored" raised>ESSAYEZ</paper-button>
         </a></p>
-      <p>Once you&#39;ve tried it and verified it works as expected, you can remove the call to <code>app.updateForecastCard</code>
-        with the fake data again. We only needed it to ensure that everything worked as expected.</p>
+      <p>Si vous avez le moindre problème à cette étape, relisez les parties &#34;<strong>Introduction</strong>&#34; et
+        &#34;<strong>Mise en place</strong>&#34;.</p>
 
 
     </google-codelab-step>
 
     <google-codelab-step label="Ajouter un cube sur une surface" duration="20">
-      <p>Progressive Web Apps should start fast and be usable immediately. In its current state, our Weather App starts
-        quickly, but it&#39;s not useable. There&#39;s no data. We could make an AJAX request to get that data, but
-        that results in an extra request and makes the initial load longer. Instead, provide real data in the first
-        load.</p>
-      <h2><strong>Inject the weather forecast data</strong></h2>
-      <p>For this code lab, we&#39;ll simulate the server injecting the weather forecast directly into the JavaScript,
-        but in a production app, the latest weather forecast data would be injected by the server based on the IP
-        address geo-location of the user.</p>
-      <p>The code already contains the data that we&#39;re going to inject. It&#39;s the <code>initialWeatherForecast</code>
-        that we used in the previous step.</p>
-      <h2><strong>Differentiating the first run</strong></h2>
-      <p>But, how do we know when to display this information, which may not be relevant on future loads when the
-        weather app is pulled from the cache? When the user loads the app on subsequent visits, they may have changed
-        cities, so we need to load the information for those cities, not necessarily the first city they ever looked
-        up.</p>
-      <p>User preferences, like the list of cities a user has subscribed to, should be stored locally using IndexedDB
-        or another fast storage mechanism. To simplify this code lab as much as possible, we&#39;ve used <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
-          target="_blank"><code>localStorage</code></a>, which is not ideal for production apps because it is a
-        blocking, synchronous storage mechanism that is potentially very slow on some devices.</p>
+      <p>Maintenant que nous avons notre flux vidéo de notre caméra, la position de notre périphérique et la position
+        de la caméra et son orientation, et que nous affichons des cubes par-dessus, il est temps de commencer à
+        interagir avec le monde réel en utilisant le &#34;test de collision&#34;. Nous voulons être capable de trouver
+        une surface dans le monde réel, et de place un cube à cet endroit.</p>
+      <h2><strong>Qu&#39;est ce qu&#39;un &#34;test de collision&#34; ?</strong></h2>
+      <p>A &#34;test de collision&#34; est généralement un moyen de vérifier qu&#39;en traçant une ligne d&#39;un point
+        de départ dans l&#39;espace avec une certaine direction, nous pouvons déterminer si cette ligne interagit avec
+        des objets qui nous intéresse. Dans notre cas, nous allons tapper sur l&#39;écran de notre périphérique AR,
+        donc il faut imaginer cette ligne partant de votre doigt, au travers de votre écran et parcourant le monde
+        physique devant vous, monde que vous voyez au travers de votre écran à l&#39;aide de la caméra.</p>
+      <p>L&#39;API WebXR va nous dire si cette ligne croise des objets du monde réel, ceci en utilisant des capacités
+        AR. </p>
+      <p>La magie opère ici au travers des SDK <a href="https://developers.google.com/ar/discover/" target="_blank">ARCore</a>
+        (Google) et <a href="https://developer.apple.com/arkit/" target="_blank">ARKit</a> (Apple). L&#39;API WebXR
+        contient en fait des branchements en natif vers ces SDK intégrés dans les sources des navigateurs, pour
+        l&#39;instant ARCore pour Google Chrome. </p>
+      <p><img style="max-width: 624.00px" src="img/d1f356be6b2f5fa8.png"></p>
+      <h2><strong>Mise en place de la scène</strong></h2>
+      <p>Nous allons ajouter une div dans la page <code>index.html</code> avec l&#39;ID <code>stabilization</code> pour
+        afficher une animation à l&#39;utilisateur représentant un statut de stabilisation, lui demandant donc de
+        bouger son téléphone. Cette animation sera affichée une fois en mode AR, et cachée dès que des surfaces auront
+        été trouvées.</p>
+      <pre><code>&lt;div id=&#34;stabilization&#34;&gt;&lt;/div&gt;
+  &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <p>Maintenant dans notre fichier app.js, la première chose à faire est de supprimer nos cubes flottants. Dans la
+        fonction onSessionStarted, remplacez <code>DemoUtils.createCubeScene()</code> par <code>new THREE.Scene()</code>.</p>
+      <pre><code> // this.scene = DemoUtils.createCubeScene();
+ this.scene = new THREE.Scene();</code></pre>
+      <p>Juste après la création de la scène, nous avons besoin de créer un objet à placer durant notre future
+        collision. Les objets à afficher en three.js sont représentés par des objets <code>THREE.Mesh</code>, qui
+        contient une géométrie et un matériau. Voici le code pour créer cette géométrie et ce matériau, avec en même la
+        transformation de notre cube pour que son origine soit sa face inférieure. Dès maintenant, nous avons juste
+        créé le mesh, l&#39;avons modifié et stocké dans <code>this.model</code>.</p>
+      <pre><code> const geometry = new THREE.BoxBufferGeometry(0.5, 0.5, 0.5);
+ const material = new THREE.MeshNormalMaterial();
+ geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.25, 0));
+ this.model = new THREE.Mesh(geometry, material);</code></pre>
+      <p>Nous allons également fournir un objet three.js <code>Reticle</code> (le code source de création est dans
+        <code>shared/utils.js</code>) qui va continuellement rechercher des hit-tests au centre de l&#39;écran, pour
+        fournir un retour visuel à l&#39;utilisateur à propos de la compréhension du monde réel faite par le
+        périphérique. Nous ajoutons le constructeur dans la fonction <code>onSessionStarted</code> après avoir récupéré
+        la frame de référence. Dans notre fonction <code>onXRFrame</code>, nous appelons la méthode update du Reticle,
+        et ajoutons la classe <code>stabilized</code> au body de la page dès que le reticle à trouver une surface. Cela
+        cache également l&#39;animation d&#39;aide de l&#39;utilisateur.</p>
+      <pre><code>class App {
+  ...
+  onSessionStarted(session) {
+    ...
+    this.reticle = new Reticle(this.session, this.camera);
+    this.scene.add(this.reticle);
+    
+    this.frameOfRef = await this.session.requestFrameOfReference(&#39;eye-level&#39;);
+    this.session.requestAnimationFrame(this.onXRFrame);
+    ...
+  }
+  onXRFrame(time, frame) {
+    let session = frame.session;
+    let pose = frame.getDevicePose(this.frameOfRef);
+
+    this.reticle.update(this.frameOfRef);
+    if (this.reticle.visible &amp;&amp; !this.stabilized) {
+      this.stabilized = true;
+      document.body.classList.add(&#39;stabilized&#39;);
+    }
+    ...
+  }
+}</code></pre>
+      <p>Nous voulons maintenant réaliser cete opération de hit-testing seulement sur une action utilisateur, une tap
+        sur l&#39;écran par exemple, ajoutons donc un écouteur sur cet évènement :</p>
+      <ul>
+        <li>dans le constructeur, attachons la méthode de callback du click sur l&#39;instance</li>
+        <li>écoutons l&#39;évènement click à la fin de la méthode <code>onSessionStarted</code>, pour s&#39;assurer que
+          tout est supporté.</li>
+        <li>finalement, ajoutons une méthode de classe vide de callback du click, <code>onClick</code></li>
+      </ul>
+      <pre><code>class App {
+  constructor() {
+    ...
+    this.onClick = this.onClick.bind(this);
+  }
+  
+  onSessionStarted(session) {
+    ...
+    this.reticle = new Reticle(this.session, this.camera);
+    this.scene.add(this.reticle);
+
+    window.addEventListener(&#39;click&#39;, this.onClick);
+  }
+
+  onClick(e) {
+    console.log(&#39;click!&#39;);
+  }
+}</code></pre>
+      <p>Vérifiez maintenant votre application, en s&#39;assurant dans Chrome Devtools que le log apparaît bien. Ce
+        tutorial peut vous aider à mettre en place le débogage à distance d&#39;un périqphérique Android : <a href="https://developers.google.com/web/tools/chrome-devtools/remote-debugging/"
+          target="_blank">https://developers.google.com/web/tools/chrome-devtools/remote-debugging/</a></p>
+      <h2><strong>Déclencher le test de collision</strong></h2>
+      <p>Maintenant que nous avons toute la mécanique pour le click et notre modèle 3D, il est temps de réaliser le
+        test de collision. L&#39;API XRSession demande un point d&#39;origine, une direction et la XRFrameOfReference
+        créée auparavant. Notre point d&#39;origine est la position du périphérique dans le système de coordonnées
+        WebXR, et la direction est un vecteur de point partant de l&#39;arrière de notre périphérique. three.js a des
+        fonctions utilitaires pour projeter un vecteur depuis un point, alors utilisons les. Cela peut paraître
+        compliqué pour ceux qui ne sont pas familier avec les matrices et les vecteurs, mais la chose la plus
+        importante ici est de comprendre que cela va générer une ligne partant de l&#39;arrière de votr téléphone. Nous
+        pouvons utiliser un raycatser de three.js pour réaliser tout les calculs mathématiques, ce qui nous donne une
+        origine et un vecteur de type <code>THREE.Vectors3</code>. Les positions x et y dans <code>setFromCamera</code>
+        est la position dans l&#39;espace de l&#39;écran, et cette fonction prend des valeurs dans des coordonnées
+        normalisées entre -1et 1. Come nous voulons tenter de placer un objet au milieu de l&#39;écran, nos valeurs x
+        et y sont juste 0.</p>
+      <p>La méthode <code>requestHitTest</code> retourne une promesse qui est résolue avec un tableau de <code>XRHitResults</code>,
+        qui contient des matrices des positions ou des collisions ont eu lieu. Si notre ligne sortant de notre
+        périphérique rencontre un mur ou le sol, la position de collision sera où cette ligne à croiser ce mur ou ce
+        sol. Si nous trouvons une collision, nous prenons le premier (le plus proche) et le convertissons en <code>THREE.Matrix4</code>.
+        Ensuite nous prenons le cube créé précédemment et le plaçons à la position de collision. Nous nous assurons
+        aussi que le cube est ajouté à la scène pour qu&#39;il soit affiché. Comme maintenant nous devons utiliser
+        await dans <code>onClick</code>, nous rendons <code>onClick</code> async.</p>
+      <pre><code>class App {
+  ...
+  async onClick(e) {
+    const x = 0;
+    const y = 0;
+   
+    this.raycaster = this.raycaster || new THREE.Raycaster();
+    this.raycaster.setFromCamera({ x, y }, this.camera);
+    const ray = this.raycaster.ray;
+    
+    const origin = new Float32Array(ray.origin.toArray());
+    const direction = new Float32Array(ray.direction.toArray());
+    const hits = await this.session.requestHitTest(origin,
+                                                   direction,
+                                                   this.frameOfRef);
+
+    if (hits.length) {
+      const hit = hits[0];
+      const hitMatrix = new THREE.Matrix4().fromArray(hit.hitMatrix);
+
+      this.model.position.setFromMatrixPosition(hitMatrix);
+
+      this.scene.add(this.model);
+    }
+  }
+}</code></pre>
       <aside class="special">
-        <p><strong>Extra Credit</strong>: Replace <code>localStorage</code> implementation with <a href="https://www.npmjs.com/package/idb"
-            target="_blank">idb</a>, check out <a href="https://github.com/localForage/localForage" target="_blank">localForage</a>
-          as a simple wrapper to idb.</p>
+        <p>Pour plus d&#39;informations sur la fonction de la XRSession <code>requestHitTest</code>, lisez la <a href="https://github.com/immersive-web/hit-test/"
+            target="_blank">proposition en cours</a>. Comme tous les fonctionalités AR, cette API est sujette à des
+          changements dans les implémentations futures.</p>
       </aside>
-      <p>First, let&#39;s add the code required to save user preferences. Find the following TODO comment in your code.</p>
-      <pre><code>  // TODO add saveSelectedCities function here</code></pre>
-      <p>And add the following code below the comment.</p>
-      <pre><code>  // Save list of cities to localStorage.
-  &lt;HIGHLIGHT&gt;app.saveSelectedCities = function() {&lt;/HIGHLIGHT&gt;
-    var selectedCities = JSON.stringify(app.selectedCities);
-    localStorage.selectedCities = selectedCities;
-  };</code></pre>
+      <p>A ce point du codelab, nous avons gérer une interaction utilisateur, déclencher un test de collision. La
+        sous-couche AR de Chrome, ARCore est capable de détecter des surfaces horizontales ou verticales.</p>
+      <h2><strong>Testez votre code</strong></h2>
+      <ul>
+        <li>quand vous lancez votre application, vous devez pouvoir voir le reticle de recherche de surface. Sinon,
+          déplacez votre téléphone.</li>
+        <li>dès que vous voyez un reticle, en tapant vous devriez voir un cube placé à cet endroit</li>
+        <li>en vous déplaçant, la couche ARCore détectera plus facilement les surfaces</li>
+        <li>si vous rencontrez le moindre problème, vérifiez le code du dossier <strong>step-05/app.js</strong></li>
+      </ul>
+      <p><img style="max-width: 624.00px" src="img/5609eaf125a11bf9.png"></p>
+      <p><a href="https://vogloblinsky.github.io/webxr-codelab/step-05" target="_blank">
+          <paper-button class="colored" raised>ESSAYEZ</paper-button>
+        </a></p>
 
 
     </google-codelab-step>
 
     <google-codelab-step label="Utiliser un modèle 3D" duration="20">
-      <p>Progressive Web Apps have to be fast, and installable, which means that they work online, offline, and on
-        intermittent, slow connections. To achieve this, we need to cache our app shell using service worker, so that
-        it&#39;s always available quickly and reliably.</p>
-      <p>If you&#39;re unfamiliar with service workers, you can get a basic understanding by reading <a href="https://developers.google.com/web/fundamentals/primers/service-worker/"
-          target="_blank">Introduction To Service Workers</a> about what they can do, how their lifecycle works and
-        more. Once you&#39;ve completed this code lab, be sure to check out the <a href="http://goo.gl/jhXCBy" target="_blank">Debugging
-          Service Workers code lab</a> for a more indepth look at how to work with service workers.</p>
-      <p>The next step is to modify the app and service worker logic to be able to cache weather data, and return the
-        most recent data from the cache when the app is offline.</p>
-      <p><strong>Tip:</strong> To start fresh and clear all saved data (<code>localStorage</code>, <code>indexedDB</code>
-        data, cached files) and remove any service workers, use the Clear storage pane in the Application tab.</p>
-      <p><a href="https://weather-pwa-sample.firebaseapp.com/step-06/" target="_blank">
-          <paper-button class="colored" raised>TRY IT</paper-button>
+      <p>Nous avons maintenant mis en place la plupart de la mécanique de notre application. Il est très sympa
+        d&#39;arriver à afficher des cubes mais nous pouvons sûrement faire mieux. Nous allons maintenant afficher un
+        vrai modèle 3D provenant de <a href="https://poly.google.com/" target="_blank">Poly</a>, une collection
+        d&#39;objets 3D proposés par des artistes, sous license <a href="https://support.google.com/poly/answer/7418679?hl=en"
+          target="_blank">CC-BY</a>. Plusieurs modèles sont à disposition dans le dossier <strong><code>assets</code></strong>.</p>
+      <p>Rajoutons d&#39;abord une référence concernant la license dans la page. Nous créons pour cela une div #info et
+        ajoutons quelques informations sur la license :</p>
+      <pre><code>&lt;div id=&#34;stabilization&#34;&gt;&lt;/div&gt;
+  &lt;div id=&#34;info&#34;&gt;
+    &lt;span&gt;
+      Modèle 3D sous licence &lt;a href=&#34;https://creativecommons.org/licenses/by/2.0/&#34;&gt;CC-BY&lt;/a&gt;
+    &lt;/span&gt;&lt;br /&gt;
+  &lt;/div&gt;
+  &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <h2><strong>Chargement de fichiers OBJ et MTL</strong></h2>
+      <p>Avant que nous commencions, nous allons utiliser des chargeurs de three.js : <a href="https://threejs.org/docs/#examples/loaders/OBJLoader"
+          target="_blank">OBJLoader</a> pour le modèle et <a href="https://threejs.org/docs/#examples/loaders/MTLLoader"
+          target="_blank">MTLLoader</a> pour les matériaux. Ces chargeurs ne sont pas inclus dans three.js, mais
+        fournis séparément. Vous en avez une copie dans le dossier <code>third_party/three.js</code>, donc ajoutons les
+        à notre page. Faites bien attention de les ajouter <strong>après</strong> three.js et <strong>avant</strong>
+        app.js :</p>
+      <pre><code>&lt;html&gt;
+...
+&lt;body&gt;
+  ...
+  &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../third_party/three.js/OBJLoader.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../third_party/three.js/MTLLoader.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../shared/utils.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;app.js&#34;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <p>Ajoutons des constantes référençant notre modèle au début de <code>app.js</code>.</p>
+      <pre><code>const MODEL_OBJ_URL = &#39;../assets/muffin/muffin.obj&#39;;
+const MODEL_MTL_URL = &#39;../assets/muffin/muffin.mtl&#39;;
+const MODEL_SCALE = 0.1;</code></pre>
+      <p>Maintenant, nous pouvons revenir à notre fonction <code>onSessionStarted</code>. Nous devons ajouter des
+        lumières à notre scène three.js et charger notre modèle. Utilisons la fonction <code>DemoUtils.createLitScene()</code>
+        qui va créer une scène <code>THREE.Scene</code> pour nous avec des lumières déjà incluses. Ensuite, utilisons
+        un autre utilitaire, <code>DemoUtils.loadModel()</code>, qui utilise OBJLoader et MTLLoader que nous avons
+        inclus précédemment. Cela retourne une promesse résolue avec le modèle en tant qu&#39;objet three.js, indiquant
+        que le chargement est terminé, mais notez que nous n&#39;utilisons pas await car nous voulons continuer le
+        rendu pendant le chargement du modèle. Dès que le modèle est chargé, nous le stockons dans this.model.</p>
+      <pre><code>async onSessionStarted(session) {
+  ...
+  
+  // this.scene = new THREE.Scene();
+  this.scene = DemoUtils.createLitScene();
+  
+  // We no longer need our cube model.
+  // Sorry, cube!
+  /*
+  const geometry = new THREE.BoxBufferGeometry(0.5, 0.5, 0.5);
+  const material = new THREE.MeshBasicMaterial();
+  geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.25, 0));
+  this.model = new THREE.Mesh(geometry, material);
+  */
+
+  DemoUtils.loadModel(MODEL_OBJ_URL, MODEL_MTL_URL).then(model =&gt; {
+    this.model = model;
+    this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+  });
+
+  ...
+}</code></pre>
+      <h2><strong>Placement de notre modèle</strong></h2>
+      <p>Nous y sommes presque. La fonction de test de collision va placer this.model que nous avons remplacé par un
+        modèle 3D maintenant, mais il reste quelques trucs à faire pour affiner tout ça. Dans le callback onClick,
+        comme notre modèle est chargé de manière asynchrone, nous pourrions arriver dans un cas où nous
+        l&#39;afficherions avant qu&#39;il soit chargé. Ajoutons un contrôle en début de fonction si this.model
+        n&#39;existe pas.</p>
+      <pre><code>async onClick(e) {
+  if (!this.model) {
+    return;
+  }
+  ...
+}</code></pre>
+      <h2><strong>Testez votre code</strong></h2>
+      <p>Maintenant vous devriez voir en tapant sur votre écran votre modèle apparaître sur la surface détectée.</p>
+      <p>Si vous rencontrez le moindre problème, vérifiez le code du dossier <strong>final/app.js</strong></p>
+      <p><img style="max-width: 298.50px" src="img/99ee498cbe7b4907.png"></p>
+      <p><a href="https://vogloblinsky.github.io/webxr-codelab/final" target="_blank">
+          <paper-button class="colored" raised>ESSAYEZ</paper-button>
         </a></p>
-      <h2><strong>Beware of the edge cases</strong></h2>
-      <p>As previously mentioned, this code <strong>must not be used in production</strong> because of the many
-        unhandled edge cases.</p>
-      <h3><strong>Cache depends on updating the cache key for every change</strong></h3>
-      <p>For example this caching method requires you to update the cache key every time content is changed, otherwise,
-        the cache will not be updated, and the old content will be served. So be sure to change the cache key with
-        every change as you&#39;re working on your project!</p>
-      <h3><strong>Requires everything to be redownloaded for every change</strong></h3>
-      <p>Another downside is that the entire cache is invalidated and needs to be re-downloaded every time a file
-        changes. That means fixing a simple single character spelling mistake will invalidate the cache and require
-        everything to be downloaded again. Not exactly efficient.</p>
-      <h3><strong>Browser cache may prevent the service worker cache from updating</strong></h3>
-      <p>There&#39;s another important caveat here. It&#39;s crucial that the HTTPS request made during the install
-        handler goes directly to the network and doesn&#39;t return a response from the browser&#39;s cache. Otherwise
-        the browser may return the old, cached version, resulting in the service worker cache never actually updating!</p>
-      <h3><strong>Beware of cache-first strategies in production</strong></h3>
-      <p>Our app uses a cache-first strategy, which results in a copy of any cached content being returned without
-        consulting the network. While a cache-first strategy is easy to implement, it can cause challenges in the
-        future. Once the copy of the host page and service worker registration is cached, it can be extremely difficult
-        to change the configuration of the service worker (since the configuration depends on where it was defined),
-        and you could find yourself deploying sites that are extremely difficult to update!</p>
-      <h3><strong>How do I avoid these edge cases?</strong></h3>
-      <p>So how do we avoid these edge cases? Use a library like <a href="https://github.com/GoogleChrome/sw-precache"
-          target="_blank">sw-precache</a>, which provides fine control over what gets expired, ensures requests go
-        directly to the network and handles all of the hard work for you.</p>
-      <h2><strong>Tips for testing live service workers</strong></h2>
-      <p>Debugging service workers can be a challenge, and when it involves caching, things can become even more of a
-        nightmare if the cache isn&#39;t updated when you expect it. Between the typical service worker life cycle and
-        bug in your code, you may become quickly frustrated. But don&#39;t. There are some tools you can use to make
-        your life easier.</p>
-      <h3><strong>Start Fresh</strong></h3>
-      <p>In some cases, you may find yourself loading cached data or that things aren&#39;t updated as you expect. To
-        clear all saved data (localStorage, indexedDB data, cached files) and remove any service workers, use the Clear
-        storage pane in the Application tab.</p>
-      <p>Some other tips:</p>
-      <ul>
-        <li>Once a service worker has been unregistered, it may remain listed until its containing browser window is
-          closed.</li>
-        <li>If multiple windows to your app are open, the new service worker will not take effect until they&#39;ve all
-          been reloaded and updated to the latest service worker.</li>
-        <li>Unregistering a service worker does not clear the cache, so it may be possible you&#39;ll still get old
-          data if the cache name hasn&#39;t changed.</li>
-        <li>If a service worker exists and a new service worker is registered, the new service worker won&#39;t take
-          control until the page is reloaded, unless you take <a href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/immediate-control"
-            target="_blank">immediate control</a>.</li>
-      </ul>
 
 
     </google-codelab-step>
 
-    <google-codelab-step label="Ajouter les ombres" duration="10">
-      <p>Choosing the right <a href="https://jakearchibald.com/2014/offline-cookbook/" target="_blank">caching strategy</a>
-        for your data is vital and depends on the type of data your app presents. For example, time-sensitive data like
-        weather or stock quotes should be as fresh as possible, while avatar images or article content can be updated
-        less frequently.</p>
-      <p>The <a href="https://jakearchibald.com/2014/offline-cookbook/#cache-network-race" target="_blank">cache-first-then-network</a>
-        strategy is ideal for our app. It gets data on screen as quickly as possible, then updates that once the
-        network has returned the latest data. In comparison to network-first-then-cache, the user does not have to wait
-        until the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">fetch</a> times
-        out to get the cached data.</p>
-      <p>Cache-first-then-network means we need to kick off two asynchronous requests, one to the cache and one to the
-        network. Our network request with the app doesn&#39;t need to change much, but we need to modify the service
-        worker to cache the response before returning it.</p>
-      <p>Under normal circumstances, the cached data will be returned almost immediately providing the app with recent
-        data it can use. Then, when the network request returns, the app will be updated using the latest data from the
-        network.</p>
-      <h2><strong>Intercept the network request and cache the response</strong></h2>
-      <p>We need to modify the service worker to intercept requests to the weather API and store their responses in the
-        cache, so we can easily access them later. In the cache-then-network strategy, we expect the network response
-        to be the ‘source of truth&#39;, always providing us with the most recent information. If it can&#39;t,
-        it&#39;s OK to fail because we&#39;ve already retrieved the latest cached data in our app.</p>
-      <p>In the service worker, let&#39;s add a <code>dataCacheName</code> so that we can separate our applications
-        data from the app shell. When the app shell is updated and older caches are purged, our data will remain
-        untouched, ready for a super fast load. Keep in mind, if your data format changes in the future, you&#39;ll
-        need a way to handle that and ensure the app shell and content stay in sync.</p>
-      <p>Add the following line to the top of your <code>service-worker.js</code> file:</p>
-      <pre><code>var dataCacheName = &#39;weatherData-v1&#39;;</code></pre>
-      <p>Next, update the <code>activate</code> event handler so that it doesn&#39;t delete the data cache when it
-        cleans up the app shell cache.</p>
-      <pre><code>if (key !== cacheName &amp;&amp; key !== dataCacheName) {</code></pre>
-      <p>Finally, update the <code>fetch</code> event handler to handle requests to the data API separately from other
-        requests.</p>
-      <pre><code>self.addEventListener(&#39;fetch&#39;, function(e) {
-  console.log(&#39;[Service Worker] Fetch&#39;, e.request.url);
-  var dataUrl = &#39;https://query.yahooapis.com/v1/public/yql&#39;;
-  if (e.request.url.indexOf(dataUrl) &gt; -1) {
-    /*
-     * When the request URL contains dataUrl, the app is asking for fresh
-     * weather data. In this case, the service worker always goes to the
-     * network and then caches the response. This is called the &#34;Cache then
-     * network&#34; strategy:
-     * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
-     */
-    e.respondWith(
-      caches.open(dataCacheName).then(function(cache) {
-        return fetch(e.request).then(function(response){
-          cache.put(e.request.url, response.clone());
-          return response;
-        });
-      })
-    );
-  } else {
-    /*
-     * The app is asking for app shell files. In this scenario the app uses the
-     * &#34;Cache, falling back to the network&#34; offline strategy:
-     * https://jakearchibald.com/2014/offline-cookbook/#cache-falling-back-to-network
-     */
-    e.respondWith(
-      caches.match(e.request).then(function(response) {
-        return response || fetch(e.request);
-      })
-    );
-  }
-});
+    <google-codelab-step label="BONUS : Utiliser un modèle animé" duration="0">
+      <p>En changeant de loader, nous pouvons charger facilement un modèle 3D animé. Nous allons utilisé un loader de
+        fichier GLTF, disponible dans le dossier <code>third_party/three.js</code>.</p>
+      <pre><code>&lt;html&gt;
+...
+&lt;body&gt;
+  ...
+  &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../third_party/three.js/GLTFLoader.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;../shared/utils.js&#34;&gt;&lt;/script&gt;
+  &lt;script src=&#34;app.js&#34;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <p>Dans votre fichier app.js, il faut modifier la référence vers le fichier gltf.</p>
+      <pre><code>const MODEL_NAME = &#39;stormtrooper&#39;;
+
+const MODEL_GLTF_URL = `../assets/${MODEL_NAME}/${MODEL_NAME}.gltf`;
+const MODEL_SCALE = 0.25;</code></pre>
+      <p>Pour animer notre modèle lors du rendu, nous allons instancier une référence à une horloge three.js et un
+        mixer. Ce mixer servira à jouer l&#39;animation stockée dans le modèle, il sera instancié dans l&#39;appel de
+        la méthode <code>loadGltfModel</code>.</p>
+      <pre><code>const clock = new THREE.Clock();
+let mixer = null;</code></pre>
+      <p>Dans la méthode <code>onSessionStarted</code>, remplacez l&#39;appel de la méthode <code>loadModel</code> par
+        <code>loadGltfModel</code></p>
+      <pre><code>DemoUtils.loadGltfModel(MODEL_GLTF_URL).then(model =&gt; {
+     this.model = model;
+     // Every model is different -- you may have to adjust the scale
+     // of a model depending on the use.
+     this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+});</code></pre>
+      <p>Enfin, dans la méthode <code>onXRFrame</code>, nous allons lancer le rafraîchissement du mixer three.js avec
+        l&#39;horloge.</p>
+      <pre><code>this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.session.baseLayer.framebuffer);
+
+if (mixer) mixer.update(clock.getDelta());
+
+if (pose) {
 </code></pre>
+      <h2><strong>Testez votre code</strong></h2>
+      <p>Maintenant vous devriez voir en tapant sur votre écran un modèle de Stormtrooper apparaître sur la surface
+        détectée.</p>
+      <p>Si vous rencontrez le moindre problème, vérifiez le code du dossier <strong>bonus/app.js</strong></p>
+      <p><img style="max-width: 320.00px" src="img/d2ae4fd17ba04973.png"></p>
+      <p><a href="https://vogloblinsky.github.io/webxr-codelab/bonus" target="_blank">
+          <paper-button class="colored" raised>ESSAYEZ</paper-button>
+        </a></p>
 
 
     </google-codelab-step>
