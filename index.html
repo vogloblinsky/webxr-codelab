@@ -125,7 +125,7 @@
             target="_blank">Android 8.0 Oreo</a></li>
         <li>vérifiez que votre téléphone est bien compatible ARCore <a href="https://developers.google.com/ar/discover/supported-devices"
             target="_blank">ici</a></li>
-        <li>vérifiez que votre version de Chrome est &gt;= 74</li>
+        <li>vérifiez que votre version de Chrome est entre 70 et 72</li>
         <li>tapez <code>chrome://flags</code> dans la barre d&#39;adresse</li>
         <li>tapez <code>webxr</code> dans le champ de recherche des drapeaux</li>
         <li>activez le drapeau WebXR Device API (<code>#webxr</code>)</li>
@@ -151,7 +151,7 @@
         </a></p>
       <p>Dé-zippez ce fichier. Vous allez obtenir un dossier (<code>webxr-codelab</code>), qui contient dans des
         dossiers les différentes étapes du codelab, avec des ressources communes associées.</p>
-      <p>Les dossiers <code>etape-NN</code> contiennent les sources pour les étapes correspondantes du codelab. Ils
+      <p>Les dossiers <code>step-NN</code> contiennent les sources pour les étapes correspondantes du codelab. Ils
         sont là pour référence.</p>
       <p>Nous allons démarrer le codelab avec le dossier <code>work</code>.</p>
       <h2><strong>Installez et vérifiez votre serveur web</strong></h2>
@@ -603,7 +603,7 @@ window.app = new App();</code></pre>
         afficher une animation à l&#39;utilisateur représentant un statut de stabilisation, lui demandant donc de
         bouger son téléphone. Cette animation sera affichée une fois en mode AR, et cachée dès que des surfaces auront
         été trouvées.</p>
-      <pre><code>&lt;div id=&#34;stabilization&#34;&gt;&lt;/div&gt;
+      <pre><code>  &lt;div id=&#34;stabilization&#34;&gt;&lt;/div&gt;
   &lt;script src=&#34;../third_party/three.js/three.js&#34;&gt;&lt;/script&gt;
   ...
 &lt;/body&gt;
@@ -614,7 +614,8 @@ window.app = new App();</code></pre>
  this.scene = new THREE.Scene();</code></pre>
       <p>Juste après la création de la scène, nous avons besoin de créer un objet à placer durant notre future
         collision. Les objets à afficher en three.js sont représentés par des objets <code>THREE.Mesh</code>, qui
-        contient une géométrie et un matériau. Voici le code pour créer cette géométrie et ce matériau, avec en même la
+        contient une géométrie et un matériau. Voici le code pour créer cette géométrie et ce matériau, avec en même
+        temps la
         transformation de notre cube pour que son origine soit sa face inférieure. Dès maintenant, nous avons juste
         créé le mesh, l&#39;avons modifié et stocké dans <code>this.model</code>.</p>
       <pre><code> const geometry = new THREE.BoxBufferGeometry(0.5, 0.5, 0.5);
