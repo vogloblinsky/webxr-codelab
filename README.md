@@ -12,6 +12,10 @@ Ce codelab est en évolution permanente. Si vous trouvez un bogue ou vous avez u
 
 Vous pouvez découvrir le [projet final ici](https://vogloblinsky.github.io/webxr-codelab/final).
 
+## Ce que vous allez réaliser
+
+![pic](images/5f9baa92feded1b2.png)![pic](images/ezgif.com-optimize.gif)
+
 ## Ce que vous allez apprendre
 
 -   Comment utiliser l’API WebXR
