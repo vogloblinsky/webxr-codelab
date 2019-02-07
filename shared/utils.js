@@ -247,6 +247,44 @@ window.DemoUtils = {
     });
   },
 
+  loadGltfModel(url) {
+    const gltfLoader = new THREE.GLTFLoader();
+
+    return new Promise((resolve, reject) => {
+      gltfLoader.load(url, function(data) {
+
+        gltf = data;
+
+        let object = gltf.scene;
+
+        let animations = gltf.animations;
+
+        if (animations && animations.length) {
+
+          mixer = new THREE.AnimationMixer(object);
+
+          for (let i = 0; i < animations.length; i++) {
+
+            let animation = animations[i];
+
+            animation.duration = 4;
+
+            mixer.clipAction(animation).play();
+
+          }
+
+        }
+
+        resolve(gltf.scene);
+      }, undefined, function(error) {
+
+        console.error(error);
+        reject(error);
+
+      });
+    });
+  },
+
   /**
    * Similar to THREE.Object3D's `lookAt` function, except we only
    * want to rotate on the Y axis. In our AR use case, we don't want

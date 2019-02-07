@@ -13,11 +13,13 @@
  * limitations under the License.
  */
 
-const MODEL_NAME = 'muffin';
+const MODEL_NAME = 'stormtrooper';
 
-const MODEL_OBJ_URL = `../assets/${MODEL_NAME}/${MODEL_NAME}.obj`;
-const MODEL_MTL_URL = `../assets/${MODEL_NAME}/${MODEL_NAME}.mtl`;
-const MODEL_SCALE = 0.1;
+const MODEL_GLTF_URL = `../assets/${MODEL_NAME}/${MODEL_NAME}.gltf`;
+const MODEL_SCALE = 0.25;
+
+const clock = new THREE.Clock();
+let mixer = null;
 
 /**
  * Container class to manage connecting to the WebXR Device API
@@ -142,7 +144,7 @@ class App {
     // resolves to a THREE.Group containing our mesh information.
     // Dont await this promise, as we want to start the rendering
     // process before this finishes.
-    DemoUtils.loadModel(MODEL_OBJ_URL, MODEL_MTL_URL).then(model => {
+    DemoUtils.loadGltfModel(MODEL_GLTF_URL).then(model => {
       this.model = model;
 
       // Every model is different -- you may have to adjust the scale
@@ -192,6 +194,8 @@ class App {
 
     // Bind the framebuffer to our baseLayer's framebuffer
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.session.baseLayer.framebuffer);
+
+    if (mixer) mixer.update(clock.getDelta());
 
     if (pose) {
       // Our XRFrame has an array of views. In the VR case, we'll have
