@@ -1,8 +1,8 @@
 # Développez une application de réalité augmentée 100% Web
 
-> ### 🚨 Ne fonctionne pas dans les dernières versions de Chrome Dev et Canary 🚨
+> ### 🚨 Peut ne pas fonctionner dans les dernières versions de Chrome Dev et Canary 🚨
 >
-> L’API WebXR est en cours de développement et soumise régulièrement à des changements. Ce codelab a été testé avec la version 70-72 de Chrome Dev.
+> L’API WebXR est en cours de développement et soumise régulièrement à des changements. Ce codelab a été testé avec la version 78 de Chrome Dev.
 
 Ce codelab est une traduction et légère adaptation du codelab [ar-with-webxr](https://github.com/googlecodelabs/ar-with-webxr) réalisé par [Jordan Santell](https://github.com/jsantell).
 
