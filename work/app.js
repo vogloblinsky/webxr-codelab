@@ -32,8 +32,11 @@ class App {
         // The entry point of the WebXR Device API is on `navigator.xr`.
         // We also want to ensure that `XRSession` has `requestHitTest`,
         // indicating that the #webxr-hit-test flag is enabled.
-        if (navigator.xr && XRSession.prototype.requestHitTest) {
-            navigator.xr.supportsSession('immersive-ar').then(
+        if (navigator.xr && XRSession.prototype.requestHitTestSource) {
+            console.log(
+                'navigator.xr && XRSession.prototype.requestHitTestSource ok'
+            );
+            navigator.xr.isSessionSupported('immersive-ar').then(
                 () => {
                     console.log('supportsSession immersive-ar ok');
                 },
