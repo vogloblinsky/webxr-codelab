@@ -30,7 +30,7 @@ class Reticle extends THREE.Object3D {
      * @param {XRSession} xrSession
      * @param {THREE.Camera} camera
      */
-    constructor(xrSession, camera) {
+    constructor(xrSession, camera, frameOfRef) {
         super();
 
         this.loader = new THREE.TextureLoader();
@@ -75,6 +75,7 @@ class Reticle extends THREE.Object3D {
         this.session = xrSession;
         this.visible = false;
         this.camera = camera;
+        this.frameOfRef = frameOfRef;
     }
 
     /**
@@ -93,6 +94,8 @@ class Reticle extends THREE.Object3D {
             this.camera
         );
         const ray = this.raycaster.ray;
+
+        console.log(ray);
 
         const origin = new Float32Array(ray.origin.toArray());
         const direction = new Float32Array(ray.direction.toArray());

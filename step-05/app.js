@@ -33,8 +33,11 @@ class App {
         // The entry point of the WebXR Device API is on `navigator.xr`.
         // We also want to ensure that `XRSession` has `requestHitTest`,
         // indicating that the #webxr-hit-test flag is enabled.
-        if (navigator.xr && XRSession.prototype.requestHitTest) {
-            navigator.xr.supportsSession('immersive-ar').then(
+        if (navigator.xr && XRSession.prototype.requestHitTestSource) {
+            console.log(
+                'navigator.xr && XRSession.prototype.requestHitTestSource ok'
+            );
+            navigator.xr.isSessionSupported('immersive-ar').then(
                 () => {
                     console.log('supportsSession immersive-ar ok');
                 },
@@ -153,14 +156,21 @@ class App {
         // Add a Reticle object, which will help us find surfaces by drawing
         // a ring shape onto found surfaces. See source code
         // of Reticle in shared/utils.js for more details.
-        this.reticle = new Reticle(this.session, this.camera);
+
+        this.frameOfRef = this.renderer.vr.referenceSpace;
+        console.log('this.frameOfRef: ', this.frameOfRef);
+
+        console.log('before reticle creation');
+
+        this.reticle = new Reticle(this.session, this.camera, this.frameOfRef);
         this.scene.add(this.reticle);
 
         // Also done by three.js WebXRManager setSession
         /*
         this.frameOfRef = await this.session.requestFrameOfReference(
             'eye-level'
-        );*/
+        );
+        */
         this.session.requestAnimationFrame(this.onXRFrame);
 
         window.addEventListener('click', this.onClick);
