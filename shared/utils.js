@@ -30,10 +30,10 @@ class Reticle extends THREE.Object3D {
      * @param {XRSession} xrSession
      * @param {THREE.Camera} camera
      */
-    constructor(xrSession, camera, frameOfRef) {
+    constructor(camera) {
         super();
 
-        this.loader = new THREE.TextureLoader();
+        this.name = 'Reticle';
 
         let geometry = new THREE.RingGeometry(0.1, 0.11, 24, 1);
         let material = new THREE.MeshBasicMaterial({
@@ -46,69 +46,49 @@ class Reticle extends THREE.Object3D {
 
         this.ring = new THREE.Mesh(geometry, material);
 
-        geometry = new THREE.PlaneBufferGeometry(0.15, 0.15);
-        // Orient the geometry so its position is flat on a horizontal surface,
-        // as well as rotate the image so the anchor is facing the user
-        geometry.applyMatrix(
-            new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(-90))
-        );
-        geometry.applyMatrix(
-            new THREE.Matrix4().makeRotationY(THREE.Math.degToRad(0))
-        );
-        material = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            transparent: true,
-            opacity: 0
-        });
-        this.icon = new THREE.Mesh(geometry, material);
-
-        // Load the anchor texture and apply it to our material
-        // once loaded
-        this.loader.load('../assets/Anchor.png', texture => {
-            this.icon.material.opacity = 1;
-            this.icon.material.map = texture;
-        });
-
         this.add(this.ring);
-        this.add(this.icon);
 
-        this.session = xrSession;
         this.visible = false;
         this.camera = camera;
-        this.frameOfRef = frameOfRef;
     }
 
     /**
      * Fires a hit test in the middle of the screen and places the reticle
      * upon the surface if found.
      *
+     * @param {XRSession} session
      * @param {XRCoordinateSystem} frameOfRef
      */
-    async update(frameOfRef) {
-        this.raycaster = this.raycaster || new THREE.Raycaster();
-        this.raycaster.setFromCamera(
-            {
-                x: 0,
-                y: 0
-            },
-            this.camera
-        );
+    async update(session, frameOfRef) {
+        this.raycaster = this.raycaster || new Raycaster();
+        this.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera);
         const ray = this.raycaster.ray;
+        let xrray = new XRRay(ray.origin, ray.direction);
 
-        console.log(ray);
+        let hits;
 
-        const origin = new Float32Array(ray.origin.toArray());
-        const direction = new Float32Array(ray.direction.toArray());
-        const hits = await this.session.requestHitTest(ray, origin);
+        try {
+            hits = await session.requestHitTest(xrray, frameOfRef);
+        } catch (error) {
+            hits = [];
+        }
 
         if (hits.length) {
             const hit = hits[0];
-            const hitMatrix = new THREE.Matrix4().fromArray(hit.hitMatrix);
+            const hitMatrix = new Matrix4().fromArray(hit.hitMatrix);
 
             // Now apply the position from the hitMatrix onto our model
             this.position.setFromMatrixPosition(hitMatrix);
 
-            DemoUtils.lookAtOnY(this, this.camera);
+            // Rotate the anchor to face the camera
+            const targetPos = new Vector3().setFromMatrixPosition(
+                this.camera.matrixWorld
+            );
+            const angle = Math.atan2(
+                targetPos.x - this.position.x,
+                targetPos.z - this.position.z
+            );
+            this.rotation.set(0, angle, 0);
 
             this.visible = true;
         }
