@@ -157,18 +157,15 @@ class App {
         // a ring shape onto found surfaces. See source code
         // of Reticle in shared/utils.js for more details.
 
-        this.frameOfRef = this.renderer.vr.referenceSpace;
         console.log('before reticle creation');
 
         this.reticle = new Reticle(this.camera);
         this.scene.add(this.reticle);
 
         // Also done by three.js WebXRManager setSession
-        /*
-        this.frameOfRef = await this.session.requestFrameOfReference(
-            'eye-level'
-        );
-        */
+        this.frameOfRef = await this.session.requestReferenceSpace('local');
+        console.log(this.frameOfRef);
+
         this.session.requestAnimationFrame(this.onXRFrame);
 
         window.addEventListener('click', this.onClick);
@@ -179,10 +176,10 @@ class App {
      * Called with the time and XRPresentationFrame.
      */
     onXRFrame(time, frame) {
-        let session = frame.session;
+        const { session } = frame;
 
         // Update the reticle's position
-        this.reticle.update(this.frameOfRef);
+        this.reticle.update(this.session, this.frameOfRef);
 
         // If the reticle has found a hit (is visible) and we have
         // not yet marked our app as stabilized, do so

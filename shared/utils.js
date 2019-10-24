@@ -75,13 +75,13 @@ class Reticle extends THREE.Object3D {
 
         if (hits.length) {
             const hit = hits[0];
-            const hitMatrix = new Matrix4().fromArray(hit.hitMatrix);
+            const hitMatrix = new THREE.Matrix4().fromArray(hit.hitMatrix);
 
             // Now apply the position from the hitMatrix onto our model
             this.position.setFromMatrixPosition(hitMatrix);
 
             // Rotate the anchor to face the camera
-            const targetPos = new Vector3().setFromMatrixPosition(
+            const targetPos = new THREE.Vector3().setFromMatrixPosition(
                 this.camera.matrixWorld
             );
             const angle = Math.atan2(
