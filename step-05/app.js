@@ -158,11 +158,9 @@ class App {
         // of Reticle in shared/utils.js for more details.
 
         this.frameOfRef = this.renderer.vr.referenceSpace;
-        console.log('this.frameOfRef: ', this.frameOfRef);
-
         console.log('before reticle creation');
 
-        this.reticle = new Reticle(this.session, this.camera, this.frameOfRef);
+        this.reticle = new Reticle(this.camera);
         this.scene.add(this.reticle);
 
         // Also done by three.js WebXRManager setSession
