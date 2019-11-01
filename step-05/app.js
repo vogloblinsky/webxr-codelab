@@ -21,7 +21,6 @@ class App {
     constructor() {
         this.onXRFrame = this.onXRFrame.bind(this);
         this.onEnterAR = this.onEnterAR.bind(this);
-        this.onClick = this.onClick.bind(this);
 
         this.init();
     }
@@ -31,7 +30,7 @@ class App {
      */
     async init() {
         // The entry point of the WebXR Device API is on `navigator.xr`.
-        // We also want to ensure that `XRSession` has `requestHitTest`,
+        // We also want to ensure that `XRSession` has `requestHitTestSource`,
         // indicating that the #webxr-hit-test flag is enabled.
         if (navigator.xr && XRSession.prototype.requestHitTestSource) {
             console.log(
@@ -62,6 +61,14 @@ class App {
     }
 
     /**
+     * Toggle on a class on the page to disable the "Enter AR"
+     * button and display the unsupported browser message.
+     */
+    onNoXRDevice() {
+        document.body.classList.add('unsupported');
+    }
+
+    /**
      * Handle a click event on the '#enter-ar' button and attempt to
      * start an XRSession.
      */
@@ -71,13 +78,18 @@ class App {
         // canvas element.
         const outputCanvas = document.createElement('canvas');
 
+        // requestSession with { optionalFeatures: ['dom-overlay-for-handheld-ar'] }, breaks XRInputs
+
         // Request a session
         navigator.xr
             .requestSession('immersive-ar')
             .then(xrSession => {
                 this.session = xrSession;
                 console.log('requestSession immersive-ar ok');
-                xrSession.addEventListener('end', this.onXRSessionEnded);
+                xrSession.addEventListener(
+                    'end',
+                    this.onXRSessionEnded.bind(this)
+                );
                 // If `requestSession` is successful, add the canvas to the
                 // DOM since we know it will now be used.
                 document.body.appendChild(outputCanvas);
@@ -91,16 +103,14 @@ class App {
             });
     }
 
-    /**
-     * Toggle on a class on the page to disable the "Enter AR"
-     * button and display the unsupported browser message.
-     */
-    onNoXRDevice() {
-        document.body.classList.add('unsupported');
-    }
-
     onXRSessionEnded() {
         console.log('onXRSessionEnded');
+        document.body.classList.remove('ar');
+        document.body.classList.remove('stabilized');
+        if (this.renderer) {
+            this.renderer.vr.setSession(null);
+            this.stabilized = false;
+        }
     }
 
     /**
@@ -157,18 +167,17 @@ class App {
         // a ring shape onto found surfaces. See source code
         // of Reticle in shared/utils.js for more details.
 
-        console.log('before reticle creation');
-
         this.reticle = new Reticle(this.camera);
         this.scene.add(this.reticle);
 
         // Also done by three.js WebXRManager setSession
         this.frameOfRef = await this.session.requestReferenceSpace('local');
-        console.log(this.frameOfRef);
 
-        this.session.requestAnimationFrame(this.onXRFrame);
+        this.tick();
+    }
 
-        window.addEventListener('click', this.onClick);
+    tick() {
+        this.rafId = this.session.requestAnimationFrame(this.onXRFrame);
     }
 
     /**
@@ -178,8 +187,45 @@ class App {
     onXRFrame(time, frame) {
         const { session } = frame;
 
-        // Update the reticle's position
-        this.reticle.update(this.session, this.frameOfRef);
+        const pose =
+            'getDevicePose' in frame
+                ? frame.getDevicePose(this.frameOfRef)
+                : frame.getViewerPose(this.frameOfRef);
+
+        // Queue up the next frame
+        this.tick();
+
+        if (pose == null) {
+            return;
+        }
+
+        for (const view of frame.getViewerPose(this.frameOfRef).views) {
+            const viewport = session.renderState.baseLayer.getViewport(view);
+            this.renderer.setViewport(
+                viewport.x,
+                viewport.y,
+                viewport.width,
+                viewport.height
+            );
+            this.camera.projectionMatrix.fromArray(view.projectionMatrix);
+            const viewMatrix = new THREE.Matrix4().fromArray(
+                view.transform.inverse.matrix
+            );
+
+            this.camera.matrix.getInverse(viewMatrix);
+            this.camera.updateMatrixWorld(true);
+
+            // NOTE: Updating input or the reticle is dependent on the camera's
+            // pose, hence updating these elements after camera update but
+            // before render.
+            this.reticle.update(this.session, this.frameOfRef);
+            this.processXRInput(frame);
+
+            // NOTE: Clearing depth caused issues on Samsung devices
+            // @see https://github.com/googlecodelabs/ar-with-webxr/issues/8
+            // this.renderer.clearDepth();
+            this.renderer.render(this.scene, this.camera);
+        }
 
         // If the reticle has found a hit (is visible) and we have
         // not yet marked our app as stabilized, do so
@@ -187,31 +233,35 @@ class App {
             this.stabilized = true;
             document.body.classList.add('stabilized');
         }
-
-        // Queue up the next frame
-        session.requestAnimationFrame(this.onXRFrame);
-
-        this.renderer.render(this.scene, this.camera);
     }
 
-    /**
-     * This method is called when tapping on the page once an XRSession
-     * has started. We're going to be firing a ray from the center of
-     * the screen, and if a hit is found, use it to place our object
-     * at the point of collision.
-     */
-    async onClick(e) {
+    processXRInput(frame) {
+        const { session } = frame;
+
+        const sources = Array.from(session.inputSources).filter(
+            input => input.targetRayMode === 'screen'
+        );
+
+        if (sources.length === 0) {
+            return;
+        }
+
+        const pose = frame.getPose(sources[0].targetRaySpace, this.frameOfRef);
+        if (pose) {
+            this.placeModel();
+        }
+    }
+
+    async placeModel() {
         // The requestHitTest function takes an x and y coordinate in
         // Normalized Device Coordinates, where the upper left is (-1, 1)
         // and the bottom right is (1, -1). This makes (0, 0) our center.
         const x = 0;
         const y = 0;
 
-        // Create a THREE.Raycaster if one doesn't already exist,
-        // and use it to generate an origin and direction from
-        // our camera (device) using the tap coordinates.
-        // Learn more about THREE.Raycaster:
-        // https://threejs.org/docs/#api/core/Raycaster
+        if (this.session == null) {
+            return;
+        }
         this.raycaster = this.raycaster || new THREE.Raycaster();
         this.raycaster.setFromCamera(
             {
@@ -221,22 +271,21 @@ class App {
             this.camera
         );
         const ray = this.raycaster.ray;
+        let xrray = new XRRay(ray.origin, ray.direction);
 
-        // Fire the hit test to see if our ray collides with a real
-        // surface. Note that we must turn our THREE.Vector3 origin and
-        // direction into an array of x, y, and z values. The proposal
-        // for `XRSession.prototype.requestHitTest` can be found here:
-        // https://github.com/immersive-web/hit-test
-        const origin = new Float32Array(ray.origin.toArray());
-        const direction = new Float32Array(ray.direction.toArray());
-        const hits = await this.session.requestHitTest(
-            origin,
-            direction,
-            this.frameOfRef
-        );
+        let hits;
+        try {
+            hits = await this.session.requestHitTest(xrray, this.frameOfRef);
+        } catch (e) {
+            // Spec says this should no longer throw on invalid requests:
+            // https://github.com/immersive-web/hit-test/issues/24
+            // But in practice, it will still happen, so just ignore:
+            // https://github.com/immersive-web/hit-test/issues/37
+            console.log(e);
+        }
 
-        // If we found at least one hit...
-        if (hits.length) {
+        if (hits && hits.length) {
+            const presentedScene = this.scene;
             // We can have multiple collisions per hit test. Let's just take the
             // first hit, the nearest, for now.
             const hit = hits[0];
@@ -253,6 +302,19 @@ class App {
 
             // Ensure our model has been added to the scene.
             this.scene.add(this.model);
+
+            // Orient the dolly/model to face the camera
+            const camPosition = new THREE.Vector3().setFromMatrixPosition(
+                this.camera.matrix
+            );
+            this.model.lookAt(
+                camPosition.x,
+                this.model.position.y,
+                camPosition.z
+            );
+            if (presentedScene.pivot) {
+                this.model.rotateY(-presentedScene.pivot.rotation.y);
+            }
         }
     }
 }

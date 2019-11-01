@@ -210,7 +210,7 @@ window.DemoUtils = {
 
         // Set texture path so that the loader knows where to find
         // linked resources
-        mtlLoader.setTexturePath(mtlURL.substr(0, mtlURL.lastIndexOf('/') + 1));
+        // mtlLoader.setTexturePath(mtlURL.substr(0, mtlURL.lastIndexOf('/') + 1));
 
         // remaps ka, kd, & ks values of 0,0,0 -> 1,1,1, models from
         // Poly benefit due to how they were encoded.
@@ -304,5 +304,32 @@ window.DemoUtils = {
             targetPos.z - looker.position.z
         );
         looker.rotation.set(0, angle, 0);
+    },
+
+    createExitButton(session) {
+        let button = document.createElement('button');
+        button.style.position = 'absolute';
+        button.style.bottom = '20px';
+        button.style.padding = '12px 6px';
+        button.style.border = '1px solid #fff';
+        button.style.borderRadius = '4px';
+        button.style.background = 'rgba(0,0,0,0.1)';
+        button.style.color = '#fff';
+        button.style.font = 'normal 13px sans-serif';
+        button.style.textAlign = 'center';
+        button.style.opacity = '0.5';
+        button.style.outline = 'none';
+        button.style.zIndex = '999';
+        button.style.left = 'calc(50% - 50px)';
+        button.style.width = '100px';
+
+        button.textContent = 'EXIT AR';
+
+        button.onclick = function() {
+            session.end();
+            document.body.removeChild(button);
+        };
+
+        document.body.appendChild(button);
     }
 };

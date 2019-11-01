@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--
 /*
  * Copyright 2017 Google Inc. All Rights Reserved.
@@ -16,53 +16,73 @@
  */
 -->
 <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            Développez une application de réalité augmentée 100% Web avec la
+            WebXR Device API
+        </title>
+        <link rel="stylesheet" type="text/css" href="../shared/app.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../third_party/mdl/material.min.css"
+        />
+    </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Développez une application de réalité augmentée 100% Web avec la WebXR Device API</title>
-  <link rel="stylesheet" type="text/css" href="../shared/app.css" />
-  <link rel="stylesheet" type="text/css" href="../third_party/mdl/material.min.css" />
-</head>
-
-<body>
-  <div id="enter-ar-info" class="demo-card mdl-card mdl-shadow--4dp">
-    <div class="mdl-card__title">
-      <h2 class="mdl-card__title-text">Application de réalité augmentée 100% Web avec la WebXR Device API</h2>
-    </div>
-    <div class="mdl-card__supporting-text">
-      Ceci est une expérimentation des fonctionnalités AR avec la WebXR Device API.
-      Apprenez-en plus à propos de ces fonctions sur le codelab <a href="https://vogloblinsky.github.io/webxr-codelab/">Développez
-        une application de réalité
-        augmentée 100% Web avec la WebXR Device API</a>.
-    </div>
-    <div class="mdl-card__actions mdl-card--border">
-      <a id="enter-ar" class="mdl-button mdl-button--raised mdl-button--accent">
-        Démarrez
-      </a>
-    </div>
-  </div>
-  <div id="unsupported-info" class="demo-card mdl-card mdl-shadow--4dp">
-    <div class="mdl-card__title">
-      <h2 class="mdl-card__title-text">Navigateur non compatible</h2>
-    </div>
-    <div class="mdl-card__supporting-text">
-      Votre navigateur ne supporte pas les fonctionnalités AR avec WebXR. Apprenez-en plus à propos de ces
-      fonctions sur le codelab <a href="https://vogloblinsky.github.io/webxr-codelab/">Développez une application
-        de réalité augmentée 100% Web avec la WebXR Device API</a>.
-    </div>
-  </div>
-  <div id="stabilization"></div>
-  <div id="info">
-    <span>
-      Modèle 3D sous licence <a href="https://creativecommons.org/licenses/by/2.0/">CC-BY</a>
-    </span><br />
-  </div>
-  <script src="../third_party/three.js/three.js"></script>
-  <script src="../third_party/three.js/GLTFLoader.js"></script>
-  <script src="../shared/utils.js"></script>
-  <script src="app.js"></script>
-</body>
-
+    <body>
+        <div id="enter-ar-info" class="demo-card mdl-card mdl-shadow--4dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">
+                    Application de réalité augmentée 100% Web avec la WebXR
+                    Device API
+                </h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                Ceci est une expérimentation des fonctionnalités AR avec la
+                WebXR Device API. Apprenez-en plus à propos de ces fonctions sur
+                le codelab
+                <a href="https://vogloblinsky.github.io/webxr-codelab/"
+                    >Développez une application de réalité augmentée 100% Web
+                    avec la WebXR Device API</a
+                >.
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a
+                    id="enter-ar"
+                    class="mdl-button mdl-button--raised mdl-button--accent"
+                >
+                    Démarrez
+                </a>
+            </div>
+        </div>
+        <div id="unsupported-info" class="demo-card mdl-card mdl-shadow--4dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Navigateur non compatible</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                Votre navigateur ne supporte pas les fonctionnalités AR avec
+                WebXR. Apprenez-en plus à propos de ces fonctions sur le codelab
+                <a href="https://vogloblinsky.github.io/webxr-codelab/"
+                    >Développez une application de réalité augmentée 100% Web
+                    avec la WebXR Device API</a
+                >.
+            </div>
+        </div>
+        <div id="stabilization"></div>
+        <div id="info">
+            <span>
+                Modèle 3D sous licence
+                <a href="https://creativecommons.org/licenses/by/2.0/"
+                    >CC-BY</a
+                > </span
+            ><br />
+        </div>
+        <script src="../third_party/three.js-r109/three.min.js"></script>
+        <script src="../third_party/three.js/GLTFLoader.js"></script>
+        <script src="../shared/utils.js"></script>
+        <script src="app.js"></script>
+    </body>
 </html>
